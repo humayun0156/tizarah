@@ -1,0 +1,12 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /blankpage                  controllers.HelloController.blankpage
+GET     /create/account/head        controllers.HelloController.createAccountHead
+
+
+GET     /login                      controllers.Assets.at(path = "/public", file = "html/login.html")
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
