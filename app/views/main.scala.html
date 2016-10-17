@@ -15,7 +15,11 @@
     <link href="@routes.Assets.versioned("vendor/bootstrap/css/bootstrap.min.css")" rel="stylesheet">
       <!-- MetisMenu CSS -->
     <link href="@routes.Assets.versioned("vendor/metisMenu/metisMenu.min.css")" rel="stylesheet">
-      <!-- Custom CSS -->
+      <!-- DataTables CSS -->
+    <link href="@routes.Assets.versioned("vendor/datatables-plugins/dataTables.bootstrap.css")" rel="stylesheet">
+      <!-- DataTables Responsive CSS -->
+    <link href="@routes.Assets.versioned("vendor/datatables-responsive/dataTables.responsive.css")" rel="stylesheet">
+    <!-- Custom CSS -->
     <link href="@routes.Assets.versioned("dist/css/sb-admin-2.css")" rel="stylesheet">
       <!-- Custom Fonts -->
     <link href="@routes.Assets.versioned("vendor/font-awesome/css/font-awesome.min.css")" rel="stylesheet" type="text/css">
@@ -49,8 +53,24 @@
     <script src="@routes.Assets.versioned("vendor/bootstrap/js/bootstrap.min.js")"></script>
     <!-- Metis Menu Plugin JavaScript -->
     <script src="@routes.Assets.versioned("vendor/metisMenu/metisMenu.min.js")"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="@routes.Assets.versioned("vendor/datatables/js/jquery.dataTables.min.js")"></script>
+    <script src="@routes.Assets.versioned("vendor/datatables-plugins/dataTables.bootstrap.min.js")"></script>
+    <script src="@routes.Assets.versioned("vendor/datatables-responsive/dataTables.responsive.js")"></script>
+
     <!-- Custom Theme JavaScript -->
     <script src="@routes.Assets.versioned("dist/js/sb-admin-2.js")"></script>
+    <script src="@routes.Assets.versioned("dist/js/tizarah_custom.js")"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    $(document).ready(function() {
+      $('#dataTables-example').DataTable({
+        responsive: true
+      });
+    });
+    </script>
 
   </body>
 
