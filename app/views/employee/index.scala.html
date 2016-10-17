@@ -1,0 +1,32 @@
+@(webJarAssets: WebJarAssets)
+
+@employee.main("Play Angular App")(webJarAssets) {
+  <div ng-controller="empCtrl">
+    <div>
+      <div class="row emp-header">
+          <!-- Employee search -->
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <input class="form-control" style="width: 70%;" type="text" ng-model="searchEmp" placeholder="Search employee ..." />
+        </div>
+        <!-- Alert messages -->
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <div ng-repeat="alert in alerts">
+            <notification ng-model="alert"></notification>
+          </div>
+        </div>
+
+        <div class="col-sm-4 col-md-4 col-lg-4">
+          <button class="btn btn-success btn-sm add-button" style="font-weight: 600;" data-toggle="modal" data-target="#newEmpModal">Add New Employee</button>
+        </div>
+
+      </div>
+
+    </div>
+    <hr/>
+
+    @views.html.employee.empList()
+    @views.html.employee.newEmployeeForm()
+    @views.html.employee.editEmployeeForm()
+
+  </div>
+}
