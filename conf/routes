@@ -3,10 +3,26 @@
 # ~~~~
 
 # Home page
+GET     /                           controllers.HelloController.index
 GET     /blankpage                  controllers.HelloController.blankpage
 GET     /create/account/head        controllers.HelloController.createAccountHead
+GET     /app/transaction/debit      controllers.HelloController.debit
+GET     /business                   controllers.BusinessController.index
+POST    /business/create            controllers.BusinessController.formSubmit
+
+GET    /login                       controllers.LoginController.login
+POST   /login/submit                controllers.LoginController.submit
 
 
-GET     /login                      controllers.Assets.at(path = "/public", file = "html/login.html")
+
+
+GET     /emp                        controllers.EmployeeController.index
+GET     /emp/list                   controllers.EmployeeController.list()
+POST    /emp/create                 controllers.EmployeeController.create()
+POST    /emp/update                 controllers.EmployeeController.update
+GET     /emp/delete                 controllers.EmployeeController.delete(empId: Int)
+
+#GET     /login                      controllers.Assets.at(path = "/public", file = "html/login.html")
+GET     /webjars/*file                      controllers.WebJarAssets.at(file)
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
