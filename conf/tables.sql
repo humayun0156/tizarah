@@ -74,4 +74,4 @@ create table employee(
   company_name VARCHAR(256) NOT NULL,
   position VARCHAR(256) NOT NULL,
   PRIMARY KEY(email)
-);
+)ENGINE = InnoDB;
