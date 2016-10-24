@@ -9,20 +9,27 @@
       <!-- /.col-lg-12 -->
   </div>
     <!-- /.row -->
-  <div class="row">
+  <div class="row" data-ng-controller="accountHeadCtrl">
+
 
     <div class="col-lg-6">
+      <!-- Alert messages -->
+      <div ng-repeat="alert in alerts">
+        <notification ng-model="alert"></notification>
+      </div>
+
       <div class="panel panel-default">
         <div class="panel-heading">
-          Create Head Account
+          Create Head Account. {{myHeader}}
         </div>
         <div class="panel-body">
-          <form role="form">
+          <form role="form" id="newHeadForm" data-ng-submit="addAccountHead()">
             <div class="form-group">
-              <label>Name</label>
-              <input class="form-control">
+              <label>Name {{newAccountHead.name}}</label>
+              <input type="text" data-ng-model="newAccountHead.name" placeholder="Enter Account Head" class="form-control" required>
+              <input type="text" data-ng-model="newAccountHead.shopId" value="1">
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" data-ng-disabled="newHeadForm.$invalid" id="submit" class="btn btn-primary">Create</button>
           </form>
         </div>
       </div>
@@ -30,7 +37,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">Head List</div>
         <div class="panel-body">
-          List of Head Accounts
+          <ul data-ng-repeat="head in accountHeads">
+            <li>{{head.id}}: {{head.name}} </li>
+          </ul>
         </div>
       </div>
 
@@ -47,12 +56,8 @@
             <div class="form-group">
               <div class="form-group">
                 <label>Select Head Account</label>
-                <select class="form-control">
-                  <option>Head Account 1</option>
-                  <option>Head Account 2</option>
-                  <option>Head Account 3</option>
-                  <option>Head Account 4</option>
-                  <option>Head Account 5</option>
+                <select class="form-control" data-ng-repeat="head in accountHeads">
+                  <option>{{head.name}}</option>
                 </select>
               </div>
               <div class="form-group">

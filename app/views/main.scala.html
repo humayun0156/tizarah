@@ -33,7 +33,7 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body ng-app="myApp">
 
     <div id="wrapper">
 
@@ -52,6 +52,11 @@
     <script src="@routes.Assets.versioned("vendor/jquery/jquery.min.js")"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="@routes.Assets.versioned("vendor/bootstrap/js/bootstrap.min.js")"></script>
+      <!-- angular-js -->
+    <script src="@routes.Assets.versioned("vendor/angular.min.js")"></script>
+    <script src="@routes.Assets.versioned("vendor/angular-animate.min.js")"></script>
+    <script src="@routes.Assets.versioned("vendor/ui-bootstrap-tpls.min.js")"></script>
+
     <!-- Metis Menu Plugin JavaScript -->
     <script src="@routes.Assets.versioned("vendor/metisMenu/metisMenu.min.js")"></script>
 
@@ -62,7 +67,9 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="@routes.Assets.versioned("dist/js/sb-admin-2.js")"></script>
+    <script src="@routes.Assets.versioned("vendor/app.js")"></script>
     <script src="@routes.Assets.versioned("dist/js/tizarah_custom.js")"></script>
+
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>

@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import dal.BusinessRepository
+import dal.DataAccessLayer
 import utils.Constants._
 import models.Business
 import play.api.Logger
@@ -19,7 +19,7 @@ import play.api.libs.json.Json._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessController @Inject()(val messagesApi: MessagesApi, repo: BusinessRepository)
+class BusinessController @Inject()(val messagesApi: MessagesApi, accessData: DataAccessLayer)
                                   (implicit ec: ExecutionContext) extends Controller with I18nSupport  {
 
   val logger = Logger(this.getClass())
@@ -33,7 +33,7 @@ class BusinessController @Inject()(val messagesApi: MessagesApi, repo: BusinessR
   }
 
   def getBusinesses = Action.async { implicit request =>
-    repo.list().map {
+    accessData.list().map {
       business => Ok(Json.toJson(business))
     }
   }
@@ -43,7 +43,7 @@ class BusinessController @Inject()(val messagesApi: MessagesApi, repo: BusinessR
     request.body.validate[Business].fold(
       error => Future.successful(BadRequest(JsError.toJson(error))),
       { emp =>
-      repo.insert(emp).map { createdEmpId =>
+        accessData.insert(emp).map { createdEmpId =>
         Ok(successResponse(Json.toJson(Map("id" ->createdEmpId)), "Employee has been created successfully."))
       }
     })

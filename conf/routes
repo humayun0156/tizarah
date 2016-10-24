@@ -6,14 +6,20 @@
 GET     /                           controllers.HelloController.index
 GET     /blankpage                  controllers.HelloController.blankpage
 GET     /create/account/head        controllers.HelloController.createAccountHead
+POST    /create/account/xyz        controllers.MyTestController.createAccountHead()
 GET     /app/transaction/debit      controllers.HelloController.debit
 GET     /business                   controllers.BusinessController.index
 POST    /business/create            controllers.BusinessController.formSubmit
 
+
+
 GET    /login                       controllers.LoginController.login
 POST   /login/submit                controllers.LoginController.submit
 
-
+GET   /admin/business/all           controllers.MyTestController.allBusiness()
+GET   /admin/shop/all               controllers.MyTestController.allShop()
+GET   /admin/head/all               controllers.MyTestController.allAccountHead()
+GET   /admin/head/:id               controllers.MyTestController.headsByShopId(id: Long)
 
 
 GET     /emp                        controllers.EmployeeController.index

@@ -5,11 +5,11 @@ import javax.inject.{Inject, Singleton}
 import dal.UserRepository
 import models.User
 import play.api.Logger
-import play.api.libs.json.{JsSuccess, Json, Reads}
+import play.api.libs.json.{JsResult, JsSuccess, Json, Reads}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Action, Controller}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 
@@ -26,9 +26,11 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
   // Shows the login screen and empties the session:
   def submit = Action(parse.json) { request =>
     // Creates a reader for the JSON - turns it into a LoginRequest
-    implicit val loginRequest: Reads[LoginRequest] = Json.reads[LoginRequest]
+    //implicit val loginRequest: Reads[LoginRequest] = Json.reads[LoginRequest]
+    implicit val loginRequest = Json.format[LoginRequest]
+    val jsResult: JsResult[LoginRequest] = request.body.validate[LoginRequest]
 
-    request.body.validate[LoginRequest] match {
+    jsResult match {
       case s: JsSuccess[LoginRequest] if (s.get.authenticate) => {
         s.get.valid
         Ok(toJson(Map("valid" -> true))).withSession("user" -> s.get.username)
@@ -45,8 +47,8 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
     def authenticate = validUsers.exists(_ == (username, password))
     def valid = {
       println("============Here=====")
-      userRepo.getByUserNamePassword(username, password).foreach(println)
-      userRepo.getAll().foreach(println)
+      val x = userRepo.getByUserNamePassword(username, password).foreach(println)
+      val y = userRepo.getAll().foreach(println)
       println("============End=====")
     }
   }
