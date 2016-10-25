@@ -27,7 +27,6 @@
             <div class="form-group">
               <label>Name {{newAccountHead.name}}</label>
               <input type="text" data-ng-model="newAccountHead.name" placeholder="Enter Account Head" class="form-control" required>
-              <input type="text" data-ng-model="newAccountHead.shopId" value="1">
             </div>
             <button type="submit" data-ng-disabled="newHeadForm.$invalid" id="submit" class="btn btn-primary">Create</button>
           </form>
@@ -56,8 +55,8 @@
             <div class="form-group">
               <div class="form-group">
                 <label>Select Head Account</label>
-                <select class="form-control" data-ng-repeat="head in accountHeads">
-                  <option>{{head.name}}</option>
+                <select class="form-control" >
+                  <option data-ng-repeat="head in accountHeads">{{head.name}}</option>
                 </select>
               </div>
               <div class="form-group">

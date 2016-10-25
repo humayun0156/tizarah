@@ -11,7 +11,7 @@ class Filters @Inject() (env: Environment,
                          loggingFilter: LoggingFilter) extends HttpFilters {
   override val filters = {
     if (env.mode ==  Mode.Dev)
-      Seq(exampleFilter, loggingFilter)
+      Seq(exampleFilter/*, loggingFilter*/)
     else
       Seq.empty
   }

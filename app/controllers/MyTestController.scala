@@ -22,6 +22,7 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
   implicit val businessFormat = Json.format[Business]
   implicit val shopFormat = Json.format[Shop]
   implicit val headFormat = Json.format[AccountHead]
+  implicit val headFormFormat = Json.format[HeadForm]
 
 
   private def successResponse(data: JsValue, message: String) = {
@@ -54,11 +55,17 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
 
   def createAccountHead() = Action.async(parse.json) { request =>
     logger.info("Head POST body json ==> " + request.body)
-    request.body.validate[AccountHead].fold(
-      error => Future.successful(BadRequest(JsError.toJson(error))),
+    request.body.validate[HeadForm].fold(
+      error => {
+        logger.info("Error: " + error)
+        Future.successful(BadRequest(JsError.toJson(error)))
+      },
       {
-        accHead => accessData.insertAccHead(accHead).map {
-          createdHeadId => Ok(successResponse(Json.toJson(Map("id" -> createdHeadId)), "Head Created Successfully."))
+        accHead => {
+          val x = AccountHead(accHead.name, 1)
+          accessData.insertAccHead(x).map {
+            createdHeadId => Ok(successResponse(Json.toJson(Map("id" -> createdHeadId)), "Head Created Successfully."))
+          }
         }
       }
     )
