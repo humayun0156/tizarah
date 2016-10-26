@@ -5,7 +5,8 @@ import models.User
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.DurationDouble
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
 class UserRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)
@@ -26,8 +27,13 @@ class UserRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)
 
   private val userTableQuery = TableQuery[UserTable]
 
-  def getByUserNamePassword(userName: String, password: String): Future[Option[User]] = db.run {
-    userTableQuery.filter(x => x.userName === userName && x.password === password).result.headOption
+  def getByUserNamePassword(userName: String, password: String): Option[User] = Await.result (
+    db.run {
+      userTableQuery.filter(x => x.userName === userName && x.password === password).result.headOption
+    }, 50 millisecond
+  ) match {
+    case Some(x) => Some(x)
+    case None => None
   }
 
   def getAll(): Future[List[User]] = db.run {

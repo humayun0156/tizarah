@@ -7,7 +7,7 @@ import models.User
 import play.api.Logger
 import play.api.libs.json.{JsResult, JsSuccess, Json, Reads}
 import play.api.libs.json.Json.toJson
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{Action, Controller, Cookie, DiscardingCookie}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -19,8 +19,15 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
 
   val logger = Logger(this.getClass())
 
-  def login = Action {
-    Ok(views.html.login("Login")).withNewSession
+  def login = Action { request =>
+    request.cookies.get("shopId") match {
+      case Some(x) => Redirect(routes.HelloController.index())
+      case None => Ok(views.html.login("Login")).withNewSession
+    }
+  }
+
+  def logout = Action { request =>
+    Redirect(routes.LoginController.login()).discardingCookies(DiscardingCookie("shopId"))
   }
 
   // Shows the login screen and empties the session:
@@ -31,9 +38,15 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
     val jsResult: JsResult[LoginRequest] = request.body.validate[LoginRequest]
 
     jsResult match {
-      case s: JsSuccess[LoginRequest] if (s.get.authenticate) => {
-        s.get.valid
-        Ok(toJson(Map("valid" -> true))).withSession("user" -> s.get.username)
+      case s: JsSuccess[LoginRequest]  => {
+        s.get.valid.map { x =>
+          Ok(toJson(Map("valid" -> true)))
+            .withSession("user" -> s.get.username)
+            .withCookies(Cookie("shopId", "1", Some(3600)))
+
+        }.getOrElse(
+          Ok(toJson(Map("valid" -> false)))
+        )
       }
       case _ => Ok(toJson(Map("valid" -> false)))
     }
@@ -45,11 +58,12 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
     val validUsers = Map("sysadmin" -> "password1", "root" -> "god", "tizarah" -> "tizarah")
 
     def authenticate = validUsers.exists(_ == (username, password))
-    def valid = {
+    def valid: Option[User] = {
       println("============Here=====")
-      val x = userRepo.getByUserNamePassword(username, password).foreach(println)
+      val x = userRepo.getByUserNamePassword(username, password)
       val y = userRepo.getAll().foreach(println)
       println("============End=====")
+      x
     }
   }
 }

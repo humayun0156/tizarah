@@ -1,5 +1,5 @@
 import com.google.inject.Inject
-import filters.{ExampleFilter, LoggingFilter}
+import filters.{AuthFilter, ExampleFilter, LoggingFilter}
 import play.api.{Environment, Mode}
 import play.api.http.HttpFilters
 
@@ -8,10 +8,11 @@ import play.api.http.HttpFilters
   */
 class Filters @Inject() (env: Environment,
                          exampleFilter: ExampleFilter,
-                         loggingFilter: LoggingFilter) extends HttpFilters {
+                         loggingFilter: LoggingFilter,
+                         authFilter: AuthFilter) extends HttpFilters {
   override val filters = {
     if (env.mode ==  Mode.Dev)
-      Seq(exampleFilter/*, loggingFilter*/)
+      Seq(authFilter, exampleFilter/*, loggingFilter*/)
     else
       Seq.empty
   }
