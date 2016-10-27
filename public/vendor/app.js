@@ -10,6 +10,8 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
     }, 2000);
 
     $scope.accountHeads = [];
+    $scope.subAccounts = [];
+
     function getAllAccountHeads() {
         AccHeadService.getAll().then(function (res) {
             $scope.accountHeads = res.data;
@@ -27,6 +29,17 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
           $scope.accountHeads.push($scope.newAccountHead);
           $scope.newAccountHead = {};
           showAlertMessage(res.status,res.msg)
+      })
+    };
+
+    $scope.newSubAccount = {};
+    $scope.addSubAccount = function () {
+      AccHeadService.  addSubAccount($scope.newSubAccount).then(function (res) {
+          var newId = res.data.id;
+          $scope.newSubAccount["id"] = newId;
+          $$scop.subAccounts.push($scope.newSubAccount);
+          $scope.newSubAccount = {};
+          showAlertMessage(res.status, res.msg)
       })
     };
 
@@ -90,6 +103,18 @@ app.service("AccHeadService", function ($http, $q) {
             }).error(function (err, status) {
                 defer.reject(err);
             });
+        return defer.promise;
+    };
+
+    task.addSubAccount = function (data) {
+        var defer = $q.defer();
+        $http.post('/create/account/abc', data)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
         return defer.promise;
     };
 

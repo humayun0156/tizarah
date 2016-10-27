@@ -51,28 +51,28 @@
           Create Sub Account
         </div>
         <div class="panel-body">
-          <form role="form">
+          <form role="form" data-ng-submit="addSubAccount()">
             <div class="form-group">
               <div class="form-group">
                 <label>Select Head Account</label>
-                <select class="form-control" >
-                  <option data-ng-repeat="head in accountHeads">{{head.name}}</option>
+                <select class="form-control" data-ng-model="newSubAccount.headId">
+                  <option data-ng-repeat="head in accountHeads" value="{{head.id}}">{{head.name}}</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Name</label>
-                <input class="form-control">
+                <input type="text" data-ng-model="newSubAccount.name" class="form-control" placeholder="Enter name">
               </div>
               <div class="form-group">
                 <label>Phone</label>
-                <input class="form-control">
+                <input type="text" data-ng-model="newSubAccount.phoneNumber" class="form-control" placeholder="Enter mobile umber">
               </div>
               <div class="form-group">
                 <label>Address</label>
-                <input class="form-control">
+                <input type="text" data-ng-model="newSubAccount.address" class="form-control" placeholder="Enter address">
               </div>
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" data-ng-disabled="newSubAccount.$invalid" class="btn btn-primary">Create</button>
           </form>
         </div>
       </div>

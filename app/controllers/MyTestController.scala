@@ -62,7 +62,10 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
       },
       {
         accHead => {
-          val x = AccountHead(accHead.name, 1)
+          val shopId = request.cookies.get("shopId") match {
+            case Some(ck) => ck.value.toLong
+          }
+          val x = AccountHead(accHead.name, shopId)
           accessData.insertAccHead(x).map {
             createdHeadId => Ok(successResponse(Json.toJson(Map("id" -> createdHeadId)), "Head Created Successfully."))
           }

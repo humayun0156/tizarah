@@ -40,6 +40,7 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
     jsResult match {
       case s: JsSuccess[LoginRequest]  => {
         s.get.valid.map { x =>
+
           Ok(toJson(Map("valid" -> true)))
             .withSession("user" -> s.get.username)
             .withCookies(Cookie("shopId", "1", Some(3600)))

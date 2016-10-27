@@ -2,7 +2,7 @@ package dal
 
 import javax.inject.Inject
 
-import models.{AccountHead, Business, Shop}
+import models.{AccountHead, Business, Shop, SubAccount}
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
@@ -91,6 +91,29 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     (accountHeadTableQuery returning accountHeadTableQuery.map(_.id)) += head
   }
 
+
+  /**********************************************
+    ********** SubAccount table *****************
+    **********************************************/
+  private class SubAccountTable(tag: Tag) extends Table[SubAccount](tag, "account") {
+    def id: Rep[Long] = column[Long]("account_id", O.PrimaryKey, O.AutoInc)
+    def name: Rep[String] = column[String]("account_name")
+    def address: Rep[String] = column[String]("address")
+    def phoneNumber: Rep[String] = column[String]("phone_number")
+    def headId: Rep[Long] = column[Long]("head_id")
+    def shopId: Rep[Long] = column[Long]("shop_id")
+
+    def headIdFk = foreignKey("head_id_fk", headId, accountHeadTableQuery)(_.id)
+    def shopIdFk = foreignKey("shop_id_fk", shopId, shopTableQuery)(_.id)
+
+    def * = (name, address, phoneNumber, headId, shopId, id.?) <> (SubAccount.tupled, SubAccount.unapply)
+  }
+
+  private val subAccountTableQuery = TableQuery[SubAccountTable]
+
+  def addSubAccount(subAccount: SubAccount): Future[Long] = db.run {
+    subAccountTableQuery returning subAccountTableQuery.map(_.id) += subAccount
+  }
 
 
 }

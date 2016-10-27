@@ -35,6 +35,8 @@ INSERT INTO account_head(head_name, shop_id) VALUES ("Paddy Head", 1);
 CREATE TABLE account (
   account_id INT(12) NOT NULL AUTO_INCREMENT,
   account_name VARCHAR(256) NOT NULL,
+  address VARCHAR(256) NOT NULL,
+  phone_number VARCHAR(20) NOT NULL,
   head_id INT(12) NOT NULL,
   shop_id INT(12) NOT NULL,
   PRIMARY KEY (account_id),

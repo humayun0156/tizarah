@@ -8,11 +8,10 @@ import play.api.http.HttpFilters
   */
 class Filters @Inject() (env: Environment,
                          exampleFilter: ExampleFilter,
-                         loggingFilter: LoggingFilter,
-                         authFilter: AuthFilter) extends HttpFilters {
+                         loggingFilter: LoggingFilter) extends HttpFilters {
   override val filters = {
     if (env.mode ==  Mode.Dev)
-      Seq(authFilter, exampleFilter/*, loggingFilter*/)
+      Seq(exampleFilter/*, loggingFilter*/)
     else
       Seq.empty
   }
