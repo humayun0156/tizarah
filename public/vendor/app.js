@@ -21,18 +21,14 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
         });
     }
 
-    function getAllSubAccounts() {
-        AccHeadService.getAll().then(function (res) {
-            $scope.accountHeads = res.data;
-            console.log($scope.accountHeads)
+    $scope.getAccountsByHeadId = function(headId) {
+        AccHeadService.getSubAccountByHeadId(headId).then(function (res) {
+            $scope.subAccounts = res.data;
+            console.log($scope.subAccounts)
         }, function (err) {
             //error
         });
-    }
-
-    function getSubAccountsByHeadId() {
-        console.log("here:" )
-    }
+    };
 
     $scope.newAccountHead = {};
     $scope.addAccountHead = function() {
@@ -58,7 +54,6 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
     };
 
     getAllAccountHeads();
-    getAllSubAccounts();
 
     $scope.alerts = [];
     function showAlertMessage(status, message) {
@@ -119,6 +114,18 @@ app.service("AccHeadService", function ($http, $q) {
             .error(function (err, status) {
                 defer.reject(err);
             });
+        return defer.promise;
+    };
+
+    task.getSubAccountByHeadId = function (headId) {
+        var defer = $q.defer();
+        $http.get('/admin/acc/sub/' + headId)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
         return defer.promise;
     };
 
