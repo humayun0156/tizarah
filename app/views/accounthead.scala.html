@@ -84,18 +84,16 @@
             <div class="form-group">
               <div class="form-group">
                 <label>Select Head Account</label>
-                <select class="form-control">
-                  <option>Head Account 1</option>
-                  <option>Head Account 2</option>
-                  <option>Head Account 3</option>
-                  <option>Head Account 4</option>
-                  <option>Head Account 5</option>
+                <select class="form-control" data-ng-change="getSubAccountsByHeadId()" data-ng-model="selectedOption">
+                  <option data-ng-repeat="head in accountHeads" value="{{head.id}}">{{head.name}}</option>
                 </select>
               </div>
             </div>
 
           </form>
-          List of Head Accounts
+          <div>
+
+          </div>
         </div>
       </div>
 

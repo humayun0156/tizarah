@@ -111,9 +111,12 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
 
   private val subAccountTableQuery = TableQuery[SubAccountTable]
 
-  def addSubAccount(subAccount: SubAccount): Future[Long] = db.run {
+  def insertSubAccount(subAccount: SubAccount): Future[Long] = db.run {
     subAccountTableQuery returning subAccountTableQuery.map(_.id) += subAccount
   }
 
+  def getSubAccountByHeadId(headId: Long): Future[List[SubAccount]] = db.run {
+    subAccountTableQuery.filter(subAcc => subAcc.headId === headId).to[List].result
+  }
 
 }

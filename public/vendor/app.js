@@ -20,6 +20,20 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
             //error
         });
     }
+
+    function getAllSubAccounts() {
+        AccHeadService.getAll().then(function (res) {
+            $scope.accountHeads = res.data;
+            console.log($scope.accountHeads)
+        }, function (err) {
+            //error
+        });
+    }
+
+    function getSubAccountsByHeadId() {
+        console.log("here:" )
+    }
+
     $scope.newAccountHead = {};
     $scope.addAccountHead = function() {
       AccHeadService.addAccountHead($scope.newAccountHead).then(function (res) {
@@ -34,16 +48,17 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
 
     $scope.newSubAccount = {};
     $scope.addSubAccount = function () {
-      AccHeadService.  addSubAccount($scope.newSubAccount).then(function (res) {
-          var newId = res.data.id;
-          $scope.newSubAccount["id"] = newId;
-          $$scop.subAccounts.push($scope.newSubAccount);
+      AccHeadService.addSubAccount($scope.newSubAccount).then(function (res) {
+          //var newId = res.data.id;
+          //$scope.newSubAccount["id"] = newId;
+          //$scope.subAccounts.push($scope.newSubAccount);
           $scope.newSubAccount = {};
           showAlertMessage(res.status, res.msg)
       })
     };
 
     getAllAccountHeads();
+    getAllSubAccounts();
 
     $scope.alerts = [];
     function showAlertMessage(status, message) {
@@ -91,6 +106,19 @@ app.service("AccHeadService", function ($http, $q) {
           .error(function (err, status) {
             defer.reject(err);
           });
+        return defer.promise;
+    };
+
+    task.getAllSubAccount = function () {
+        var defer = $q.defer();
+        $http.get('/admin/subaccount/all')
+            .success(function(res) {
+                task.taskList = res;
+                defer.resolve(res);
+            })
+            .error(function (err, status) {
+                defer.reject(err);
+            });
         return defer.promise;
     };
 
