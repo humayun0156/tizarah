@@ -1,4 +1,4 @@
-@()
+@(tkName: String, tkValue: String)
 
 @main("Account Head") {
 
@@ -27,6 +27,7 @@
             <div class="form-group">
               <label>Name {{newAccountHead.name}}</label>
               <input type="text" data-ng-model="newAccountHead.name" placeholder="Enter Account Head" class="form-control" required>
+              <input type="hidden" name="@tkName" value="@tkValue">
             </div>
             <button type="submit" data-ng-disabled="newHeadForm.$invalid" id="submit" class="btn btn-primary">Create</button>
           </form>
@@ -61,7 +62,7 @@
               </div>
               <div class="form-group">
                 <label>Name</label>
-                <input type="text" data-ng-model="newSubAccount.name" class="form-control" placeholder="Enter name">
+                <input type="text" data-ng-model="newSubAccount.name" class="form-control" placeholder="Enter name" required>
               </div>
               <div class="form-group">
                 <label>Phone</label>

@@ -8,14 +8,16 @@ import play.api.Logger
 import play.api.libs.json.Json._
 import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc.{Action, Controller, Request}
-
+import play.filters.csrf._
+import play.filters.csrf.CSRF.Token
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * @author Humayun
   */
 class MyTestController @Inject() (accessData: DataAccessLayer,
-                                  userRepo: UserRepository)
+                                  userRepo: UserRepository,
+                                  checkToken: CSRFCheck)
                                  (implicit val ec: ExecutionContext) extends Controller{
 
   val logger = Logger(this.getClass())
@@ -87,23 +89,25 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
     )
   }
 
-  def createAccountHead() = Action.async(parse.json) { request =>
-    logger.info("Head POST body json ==> " + request.body)
-    request.body.validate[HeadForm].fold(
-      error => {
-        logger.info("Error: " + error)
-        Future.successful(BadRequest(JsError.toJson(error)))
-      },
-      {
-        accHead => {
-          val shopId = getShopId(request)
-          val x = AccountHead(accHead.name, shopId)
-          accessData.insertAccHead(x).map {
-            createdHeadId => Ok(successResponse(Json.toJson(Map("id" -> createdHeadId)), "Head Created Successfully."))
+  def createAccountHead() =  /*checkToken*/ {
+    Action.async(parse.json) { implicit request =>
+      logger.info("Head POST body json ==> " + request.body)
+      request.body.validate[HeadForm].fold(
+        error => {
+          logger.info("Error: " + error)
+          Future.successful(BadRequest(JsError.toJson(error)))
+        },
+        {
+          accHead => {
+            val shopId = getShopId(request)
+            val x = AccountHead(accHead.name, shopId)
+            accessData.insertAccHead(x).map {
+              createdHeadId => Ok(successResponse(Json.toJson(Map("id" -> createdHeadId)), "Head Created Successfully."))
+            }
           }
         }
-      }
-    )
+      )
+    }
   }
 
 }

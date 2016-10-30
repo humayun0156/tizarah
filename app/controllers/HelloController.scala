@@ -1,11 +1,15 @@
 package controllers
 
+import javax.inject.Inject
+
 import play.api.mvc.{Action, Controller}
+import play.filters.csrf._
+import play.filters.csrf.CSRF.Token
 
 /**
   * @author Humayun
   */
-class HelloController extends Controller {
+class HelloController @Inject() (addToken: CSRFAddToken) extends Controller {
 
   def index = Action {
     Ok(views.html.index())
@@ -15,8 +19,11 @@ class HelloController extends Controller {
     Ok(views.html.blankpage())
   }
 
-  def createAccountHead = Action {
-    Ok(views.html.accounthead())
+  def createAccountHead = addToken {
+    Action { implicit request =>
+      val Token(name, value) = CSRF.getToken.get
+      Ok(views.html.accounthead(s"$name", s"$value"))
+    }
   }
 
   def debit = Action {
