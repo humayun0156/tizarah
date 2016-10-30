@@ -8,6 +8,7 @@ GET     /blankpage                  controllers.HelloController.blankpage
 GET     /create/account/head        controllers.HelloController.createAccountHead
 POST    /create/account/xyz        controllers.MyTestController.createAccountHead()
 POST    /create/account/abc         controllers.MyTestController.createSubAccount()
+POST    /create/account/transaction  controllers.MyTestController.createTransaction()
 GET     /app/transaction/debit      controllers.HelloController.debit
 GET     /business                   controllers.BusinessController.index
 POST    /business/create            controllers.BusinessController.formSubmit

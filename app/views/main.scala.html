@@ -11,7 +11,7 @@
 
     <title>@title</title>
     <link rel="icon" href="@routes.Assets.versioned("images/favicon.png")">
-
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <!-- Bootstrap Core CSS -->
     <link href="@routes.Assets.versioned("vendor/bootstrap/css/bootstrap.min.css")" rel="stylesheet">
       <!-- MetisMenu CSS -->
@@ -78,6 +78,17 @@
         responsive: true
       });
     });
+    </script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+            $( function() {
+              $( "#datepicker" ).datepicker({
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd/mm/yy"
+              });
+            } );
     </script>
 
   </body>

@@ -1,8 +1,9 @@
 package dal
 
+import java.sql.Timestamp
 import javax.inject.Inject
 
-import models.{AccountHead, Business, Shop, SubAccount}
+import models._
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 
@@ -119,4 +120,29 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     subAccountTableQuery.filter(subAcc => subAcc.headId === headId).to[List].result
   }
 
+
+  /**********************************************
+    ********** Transaction table *****************
+    **********************************************/
+  private class TransactionTable(tag: Tag) extends Table[Transaction](tag, "transaction") {
+    def id: Rep[Long] = column[Long]("transaction_id", O.PrimaryKey, O.AutoInc)
+    def accountId: Rep[Long] = column[Long]("account_id")
+    def shopId: Rep[Long] = column[Long]("shop_id")
+    def description: Rep[String] = column[String]("description")
+    def amount: Rep[Double] = column[Double]("amount")
+    def transactionType: Rep[String] = column[String]("transaction_type")
+    //FIXME works only MySQL?
+    def date: Rep[Timestamp] = column[Timestamp]("date")
+
+    def accountIdFk = foreignKey("account_id_fk", accountId, subAccountTableQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.NoAction)
+    def shopIdFk = foreignKey("shop_id_fk", shopId, shopTableQuery)(_.id)
+
+    def * = (shopId, accountId, description, amount, date, transactionType, id.?) <> (Transaction.tupled, Transaction.unapply)
+  }
+
+  private val transactionTableQuery = TableQuery[TransactionTable]
+
+  def insertTransaction(transaction: Transaction): Future[Long] = db.run {
+    transactionTableQuery returning transactionTableQuery.map(_.id) += transaction
+  }
 }

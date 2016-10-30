@@ -53,6 +53,14 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
       })
     };
 
+    $scope.newTransaction = {};
+    $scope.addTransaction = function () {
+        AccHeadService.addTransaction($scope.newTransaction).then(function (res) {
+            $scope.newTransaction = {};
+            showAlertMessage(res.status, res.msg)
+        })
+    };
+
     getAllAccountHeads();
 
     $scope.alerts = [];
@@ -144,6 +152,18 @@ app.service("AccHeadService", function ($http, $q) {
     task.addSubAccount = function (data) {
         var defer = $q.defer();
         $http.post('/create/account/abc', data)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
+        return defer.promise;
+    };
+
+    task.addTransaction = function (data) {
+        var defer = $q.defer();
+        $http.post('/create/account/transaction', data)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
