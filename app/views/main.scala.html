@@ -86,8 +86,10 @@
                 showButtonPanel: true,
                 changeMonth: true,
                 changeYear: true,
-                dateFormat: "dd/mm/yy"
-              });
+                dateFormat: "dd/mm/yy",
+                altField: "#alternate",
+                altFormat: "DD, d MM, yy"
+              }) .datepicker("setDate", new Date());
             } );
     </script>
 

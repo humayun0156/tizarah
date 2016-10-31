@@ -30,4 +30,7 @@ class HelloController @Inject() (addToken: CSRFAddToken) extends Controller {
     Ok(views.html.debitTranscation())
   }
 
+  def journal = Action {
+    Ok(views.html.journal())
+  }
 }
