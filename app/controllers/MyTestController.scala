@@ -145,6 +145,23 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
     }
   }
 
+  def todayJournal() = Action.async { request =>
+    val data: Future[List[Transaction]] = accessData.getTodayTranByShopId(getShopId(request))
+    /*val d = for (
+      tran <- data;
+      debit <- tran.toList;
+      d1 <- debit.transactionType.equals("debit") ;
+      d2 <- debit.transactionType.equals("credit")
+    ) yield (d1, d2)*/
+    logger.info("debitTransaction: " )
+
+    accessData.getTodayTranByShopId(getShopId(request)).map { res =>
+      logger.info("Message: " + res)
+      Ok
+    }
+    Future.successful(Ok)
+  }
+
 }
 
 case class HeadForm(name: String)

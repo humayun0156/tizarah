@@ -145,4 +145,9 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
   def insertTransaction(transaction: Transaction): Future[Long] = db.run {
     transactionTableQuery returning transactionTableQuery.map(_.id) += transaction
   }
+
+  def getTodayTranByShopId(shopId: Long): Future[List[Transaction]] = db.run {
+    //val q = sql"select * from TRANSACTION t WHERE t.shopId=$shopId and date = curdate()".as[String]
+    transactionTableQuery.filter(t => t.shopId === shopId && t.date === new Date()).to[List].result
+  }
 }

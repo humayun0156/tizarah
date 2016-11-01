@@ -1,5 +1,5 @@
 
-var app = angular.module('myApp', []);
+var app = angular.module('myApp', ['ui.bootstrap']);
 
 app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
     $scope.firstName = "Humayun";
@@ -74,6 +74,27 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
 
 });
 
+
+app.controller('journalCtrl', function ($scope, $timeout, JournalService) {
+    $scope.firstName = "Humayun";
+    $scope.date = new Date();
+
+    function getTodayJournal() {
+        JournalService.todayJournal().then(function (res) {
+            $scope.accountHeads = res.data;
+            console.log($scope.accountHeads)
+        }, function (err) {
+            //error
+        });
+    }
+    getTodayJournal();
+
+    $scope.change = function (value) {
+        console.log("Changed data: " + value)
+    }
+
+
+});
 
 /**
  * Directive for alert notification. You can also use angular ui-bootstrap for better alert notifications
@@ -170,6 +191,27 @@ app.service("AccHeadService", function ($http, $q) {
             }).error(function (err, status) {
             defer.reject(err);
         });
+        return defer.promise;
+    };
+
+    return task;
+});
+
+
+app.service("JournalService", function ($http, $q) {
+    var task = this;
+    task.taskList = {};
+
+    task.todayJournal = function () {
+        var defer = $q.defer();
+        $http.get('/app/journal/today')
+            .success(function(res) {
+                task.taskList = res;
+                defer.resolve(res);
+            })
+            .error(function (err, status) {
+                defer.reject(err);
+            });
         return defer.promise;
     };
 
