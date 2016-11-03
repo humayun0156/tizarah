@@ -36,17 +36,19 @@
                       <th>Amount</th>
                     </tr>
                   </thead>
+                  <tfoot>
+                    <tr >
+                      <td colspan="2">Total: </td>
+                      <td>{{debitTotal}}</td>
+                    </tr>
+                  </tfoot>
                   <tbody>
-                    <tr>
-                      <td>12</td>
-                      <td>lka alkd sdlf lsdfasdlk</td>
-                      <td>2000000</td>
+                    <tr data-ng-repeat="x in debitTranList">
+                      <td>{{x.id}}</td>
+                      <td>{{x.description}}</td>
+                      <td>{{x.amount}}</td>
                     </tr>
-                    <tr>
-                      <td>12</td>
-                      <td>lka alkd sdlf lsdfasdlk</td>
-                      <td>2000000</td>
-                    </tr>
+
                   </tbody>
                 </table>
 
@@ -63,17 +65,19 @@
                       <th>Amount</th>
                     </tr>
                   </thead>
+                  <tfoot>
+                    <tr >
+                      <td colspan="2">Total: </td>
+                      <td>{{creditTotal}}</td>
+                    </tr>
+                  </tfoot>
                   <tbody>
-                    <tr>
-                      <td>12</td>
-                      <td>lka alkd sdlf lsdfasdlk</td>
-                      <td>2000000</td>
+                    <tr data-ng-repeat="y in creditTranList">
+                      <td>{{y.id}}</td>
+                      <td>{{y.description}}</td>
+                      <td>{{y.amount}}</td>
                     </tr>
-                    <tr>
-                      <td>12</td>
-                      <td>lka alkd sdlf lsdfasdlk</td>
-                      <td>2000000</td>
-                    </tr>
+
                   </tbody>
                 </table>
               </div>

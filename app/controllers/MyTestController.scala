@@ -9,7 +9,8 @@ import dal.{DataAccessLayer, UserRepository}
 import models._
 import play.api.Logger
 import play.api.libs.json.Json._
-import play.api.libs.json.{JsError, JsValue, Json}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 import play.api.mvc.{Action, Controller, Request, RequestHeader}
 import play.filters.csrf._
 import play.filters.csrf.CSRF.Token
@@ -33,6 +34,11 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
   implicit val subFormFormat = Json.format[SubAccountForm]
   implicit val transactionForm = Json.format[TransactionForm]
 
+  implicit val rds: Reads[Timestamp] = (__ \ "time").read[Long].map{ long => new Timestamp(long) }
+  implicit val wrs: Writes[Timestamp] = (__ \ "time").write[Long].contramap{ (a: Timestamp) => a.getTime }
+  implicit val fmt: Format[Timestamp] = Format(rds, wrs)
+  implicit val transactionFormat = Json.format[Transaction]
+  implicit val jTranFormat = Json.format[JournalTransaction]
 
   private def successResponse(data: JsValue, message: String, status: Option[String] = Some("success")) = {
     status match {
@@ -146,20 +152,13 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
   }
 
   def todayJournal() = Action.async { request =>
-    val data: Future[List[Transaction]] = accessData.getTodayTranByShopId(getShopId(request))
-    /*val d = for (
-      tran <- data;
-      debit <- tran.toList;
-      d1 <- debit.transactionType.equals("debit") ;
-      d2 <- debit.transactionType.equals("credit")
-    ) yield (d1, d2)*/
-    logger.info("debitTransaction: " )
+    val data: List[Transaction] = accessData.getTodayTranByShopId(1L)
 
-    accessData.getTodayTranByShopId(getShopId(request)).map { res =>
-      logger.info("Message: " + res)
-      Ok
-    }
-    Future.successful(Ok)
+    val debitTran: List[Transaction] = data.filter(t => t.transactionType.equals("debit"))
+    val creditTran: List[Transaction] = data.filter(t => t.transactionType.equals("credit"))
+    val jTran: JournalTransaction = JournalTransaction(debitTran, creditTran)
+    logger.info("debitTransaction: "+ data )
+    Future.successful(Ok(successResponse(Json.toJson(jTran), "")))
   }
 
 }
@@ -168,3 +167,5 @@ case class HeadForm(name: String)
 case class SubAccountForm(headId: String, name: String, phoneNumber: String, address: String)
 case class TransactionForm(accountId: String, date: String, transactionType: String,
                            description: String, amount: Double)
+
+case class JournalTransaction(debit: List[Transaction], credit: List[Transaction])

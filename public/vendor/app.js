@@ -79,14 +79,30 @@ app.controller('journalCtrl', function ($scope, $timeout, JournalService) {
     $scope.firstName = "Humayun";
     $scope.date = new Date();
 
+    function sumTransaction(transactionList) {
+        var total = 0;
+        for (var i = 0; i < transactionList.length; i++) {
+            var transaction = transactionList[i];
+            total += transaction.amount;
+        }
+        return Number(total.toFixed(2)).toLocaleString('bn');
+    }
+
     function getTodayJournal() {
         JournalService.todayJournal().then(function (res) {
-            $scope.accountHeads = res.data;
-            console.log($scope.accountHeads)
+            $scope.debitTranList = res.data.debit;
+            $scope.creditTranList = res.data.credit;
+            $scope.debitTotal = sumTransaction($scope.debitTranList);
+            $scope.creditTotal = sumTransaction($scope.creditTranList);
+
+            console.log(res.data);
+            console.log($scope.debitTranList);
+            console.log($scope.creditTranList);
         }, function (err) {
             //error
         });
     }
+
     getTodayJournal();
 
     $scope.change = function (value) {

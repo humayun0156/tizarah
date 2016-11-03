@@ -47,13 +47,13 @@ CREATE TABLE account (
 INSERT INTO account(account_name, head_id, shop_id) VALUES ("Md. Robiul Islam", 1, 1);
 
 CREATE TABLE transaction (
-  transaction_id INT(12) NOT NULL AUTO_INCREMENT,
-  account_id INT(12) NOT NULL,
   shop_id INT(12) NOT NULL,
+  account_id INT(12) NOT NULL,
   description varchar(1000) NOT NULL,
   amount DOUBLE NOT NULL,
-  transaction_type varchar(6) NOT NULL,
   date TIMESTAMP NOT NULL,
+  transaction_type varchar(6) NOT NULL,
+  transaction_id INT(12) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (transaction_id),
   FOREIGN KEY (account_id) REFERENCES account(account_id),
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id)

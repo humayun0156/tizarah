@@ -6,8 +6,11 @@ import javax.inject.Inject
 import models._
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
+import slick.jdbc.GetResult
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration.DurationDouble
 
 /**
   * @author Humayun
@@ -146,8 +149,13 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     transactionTableQuery returning transactionTableQuery.map(_.id) += transaction
   }
 
-  def getTodayTranByShopId(shopId: Long): Future[List[Transaction]] = db.run {
-    //val q = sql"select * from TRANSACTION t WHERE t.shopId=$shopId and date = curdate()".as[String]
-    transactionTableQuery.filter(t => t.shopId === shopId && t.date === new Date()).to[List].result
+  implicit val transactionResult = GetResult(t => Transaction(t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<<))
+  /*implicit val tR = GetResult(t =>
+    Transaction(t.nextLong(), t.nextLong, t.nextString, t.nextDouble(),
+      t.nextTimestamp(), t.nextString, t.nextLongOption()))*/
+  def getTodayTranByShopId(shopId: Long): List[Transaction] = {
+    val query = sql"select * from TRANSACTION t WHERE t.shop_id=$shopId and date(date) = curdate()".as[Transaction]
+    Await.result(db.run(query), 2 seconds ).to[List]
   }
+
 }
