@@ -151,14 +151,28 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
     }
   }
 
-  def todayJournal() = Action.async { request =>
-    val data: List[Transaction] = accessData.getTodayTranByShopId(1L)
+  def todayJournal(date: Long) = Action.async { request =>
+
+    logger.info("DateRequested for journal: " + date)
+    val dd: String = formattedDateAsString(date, "yyyy-MM-dd")
+    logger.info("FormattedDate of journal: " + dd)
+
+    val data: List[Transaction] = accessData.getTodayTranByShopId(getShopId(request), dd)
 
     val debitTran: List[Transaction] = data.filter(t => t.transactionType.equals("debit"))
     val creditTran: List[Transaction] = data.filter(t => t.transactionType.equals("credit"))
-    val jTran: JournalTransaction = JournalTransaction(debitTran, creditTran)
+
+    val debitTotal: Double = debitTran.map(t => t.amount).sum
+    val creditTotal: Double = creditTran.map(t => t.amount).sum
+    logger.info("debitTotal: " + debitTotal + ", creditTotal: " + creditTotal)
+    val jTran: JournalTransaction = JournalTransaction(debitTran, creditTran, debitTotal, creditTotal)
     logger.info("debitTransaction: "+ data )
     Future.successful(Ok(successResponse(Json.toJson(jTran), "")))
+  }
+
+  def formattedDateAsString(longDate: Long, pattern: String): String = {
+    val sdf = new SimpleDateFormat(pattern)
+    sdf.format(new Date(longDate))
   }
 
 }
@@ -168,4 +182,5 @@ case class SubAccountForm(headId: String, name: String, phoneNumber: String, add
 case class TransactionForm(accountId: String, date: String, transactionType: String,
                            description: String, amount: Double)
 
-case class JournalTransaction(debit: List[Transaction], credit: List[Transaction])
+case class JournalTransaction(debit: List[Transaction], credit: List[Transaction],
+                              debitTotal: Double, creditTotal: Double)

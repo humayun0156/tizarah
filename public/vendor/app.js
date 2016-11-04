@@ -75,25 +75,16 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
 });
 
 
-app.controller('journalCtrl', function ($scope, $timeout, JournalService) {
+app.controller('journalCtrl', function ($scope, $timeout, $filter, JournalService) {
     $scope.firstName = "Humayun";
-    $scope.date = new Date();
+    $scope.date = $filter('date')(new Date(), "yyyy-MM-dd");
 
-    function sumTransaction(transactionList) {
-        var total = 0;
-        for (var i = 0; i < transactionList.length; i++) {
-            var transaction = transactionList[i];
-            total += transaction.amount;
-        }
-        return Number(total.toFixed(2)).toLocaleString('bn');
-    }
-
-    function getTodayJournal() {
-        JournalService.todayJournal().then(function (res) {
+    function getTodayJournal(date) {
+        JournalService.todayJournal(date).then(function (res) {
             $scope.debitTranList = res.data.debit;
             $scope.creditTranList = res.data.credit;
-            $scope.debitTotal = sumTransaction($scope.debitTranList);
-            $scope.creditTotal = sumTransaction($scope.creditTranList);
+            $scope.debitTotal = Number(res.data.debitTotal).toLocaleString('bn');
+            $scope.creditTotal = Number(res.data.creditTotal).toLocaleString('bn');
 
             console.log(res.data);
             console.log($scope.debitTranList);
@@ -103,10 +94,19 @@ app.controller('journalCtrl', function ($scope, $timeout, JournalService) {
         });
     }
 
-    getTodayJournal();
+    getTodayJournal(new Date().getTime());
 
-    $scope.change = function (value) {
-        console.log("Changed data: " + value)
+    $scope.change = function (dateValue) {
+        console.log("Dateeee: " + dateValue); //    dd/MM/yyyy
+        var splitDate = dateValue.split("/");
+        console.log("Changed data: " + dateValue);
+        //var d = dateValue.replace(/\//g, '-');
+        var day = splitDate[0];
+        var month = splitDate[1];
+        var year = splitDate[2];
+        var d = new Date(year+"-"+month+"-"+day).getTime();
+        console.log("D: " + d);
+        getTodayJournal(d);
     }
 
 
@@ -218,9 +218,11 @@ app.service("JournalService", function ($http, $q) {
     var task = this;
     task.taskList = {};
 
-    task.todayJournal = function () {
+    task.todayJournal = function (date) {
         var defer = $q.defer();
-        $http.get('/app/journal/today')
+        var url = '/app/journal/today?date=' + date;
+        console.log("Request: " + url);
+        $http.get(url)
             .success(function(res) {
                 task.taskList = res;
                 defer.resolve(res);

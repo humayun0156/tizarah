@@ -14,7 +14,8 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <div class="form-group">
-              <label for="datepicker">Date:  {{date | date:'dd/MM/yyyy'}}</label>
+              @*<label for="datepicker">Date:  {{date | date:'dd-MM-yyyy'}}</label>*@
+              <label for="datepicker">Date:  {{date}}</label>
               <input type="text" data-ng-model="journaldate"
                      id="datepicker" readonly required data-ng-change="change(journaldate)">
               <input type="text" id="alternate" size="30">

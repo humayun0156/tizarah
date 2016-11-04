@@ -153,8 +153,8 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
   /*implicit val tR = GetResult(t =>
     Transaction(t.nextLong(), t.nextLong, t.nextString, t.nextDouble(),
       t.nextTimestamp(), t.nextString, t.nextLongOption()))*/
-  def getTodayTranByShopId(shopId: Long): List[Transaction] = {
-    val query = sql"select * from TRANSACTION t WHERE t.shop_id=$shopId and date(date) = curdate()".as[Transaction]
+  def getTodayTranByShopId(shopId: Long, journalDate: String): List[Transaction] = {
+    val query = sql"select * from TRANSACTION t WHERE t.shop_id=$shopId and date(date)=$journalDate".as[Transaction]
     Await.result(db.run(query), 2 seconds ).to[List]
   }
 
