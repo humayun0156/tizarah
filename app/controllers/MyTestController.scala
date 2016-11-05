@@ -38,6 +38,7 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
   implicit val wrs: Writes[Timestamp] = (__ \ "time").write[Long].contramap{ (a: Timestamp) => a.getTime }
   implicit val fmt: Format[Timestamp] = Format(rds, wrs)
   implicit val transactionFormat = Json.format[Transaction]
+  implicit val journalRepFormat = Json.format[JournalRep]
   implicit val jTranFormat = Json.format[JournalTransaction]
 
   private def successResponse(data: JsValue, message: String, status: Option[String] = Some("success")) = {
@@ -157,10 +158,10 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
     val dd: String = formattedDateAsString(date, "yyyy-MM-dd")
     logger.info("FormattedDate of journal: " + dd)
 
-    val data: List[Transaction] = accessData.getTodayTranByShopId(getShopId(request), dd)
+    val data: List[JournalRep] = accessData.getTodayTranByShopId(getShopId(request), dd)
 
-    val debitTran: List[Transaction] = data.filter(t => t.transactionType.equals("debit"))
-    val creditTran: List[Transaction] = data.filter(t => t.transactionType.equals("credit"))
+    val debitTran: List[JournalRep] = data.filter(t => t.transactionType.equals("debit"))
+    val creditTran: List[JournalRep] = data.filter(t => t.transactionType.equals("credit"))
 
     val debitTotal: Double = debitTran.map(t => t.amount).sum
     val creditTotal: Double = creditTran.map(t => t.amount).sum
@@ -182,5 +183,5 @@ case class SubAccountForm(headId: String, name: String, phoneNumber: String, add
 case class TransactionForm(accountId: String, date: String, transactionType: String,
                            description: String, amount: Double)
 
-case class JournalTransaction(debit: List[Transaction], credit: List[Transaction],
+case class JournalTransaction(debit: List[JournalRep], credit: List[JournalRep],
                               debitTotal: Double, creditTotal: Double)

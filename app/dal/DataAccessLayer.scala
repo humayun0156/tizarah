@@ -149,12 +149,14 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     transactionTableQuery returning transactionTableQuery.map(_.id) += transaction
   }
 
-  implicit val transactionResult = GetResult(t => Transaction(t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<<))
+  //implicit val transactionResult = GetResult(t => Transaction(t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<<))
   /*implicit val tR = GetResult(t =>
     Transaction(t.nextLong(), t.nextLong, t.nextString, t.nextDouble(),
       t.nextTimestamp(), t.nextString, t.nextLongOption()))*/
-  def getTodayTranByShopId(shopId: Long, journalDate: String): List[Transaction] = {
-    val query = sql"select * from TRANSACTION t WHERE t.shop_id=$shopId and date(date)=$journalDate".as[Transaction]
+  implicit val journalRepResult = GetResult(t => JournalRep(t.<<, t.<<, t.<<, t.<<, t.<<))
+  def getTodayTranByShopId(shopId: Long, journalDate: String): List[JournalRep] = {
+    //val query = sql"select t.description, t.amount,  from TRANSACTION t WHERE t.shop_id=$shopId and date(date)=$journalDate".as[Transaction]
+    val query = sql"SELECT t.transaction_id, a.account_name, t.description, t.transaction_type, t.amount  from transaction t, account a where t.shop_id=$shopId and date(t.date)=$journalDate and t.account_id=a.account_id".as[JournalRep]
     Await.result(db.run(query), 2 seconds ).to[List]
   }
 
