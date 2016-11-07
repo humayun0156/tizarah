@@ -9,10 +9,11 @@ import play.filters.csrf.CSRFFilter
 class Filters @Inject() (env: Environment,
                          exampleFilter: ExampleFilter,
                          loggingFilter: LoggingFilter,
-                         cSRFFilter: CSRFFilter) extends HttpFilters {
+                         cSRFFilter: CSRFFilter,
+                         authFilter: AuthFilter) extends HttpFilters {
   override val filters = {
     if (env.mode ==  Mode.Dev)
-      Seq(/*cSRFFilter,*/ exampleFilter/*, loggingFilter*/)
+      Seq(authFilter,/*cSRFFilter,*/ exampleFilter/*, loggingFilter*/)
     else
       Seq.empty
   }

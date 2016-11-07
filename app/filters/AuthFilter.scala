@@ -14,11 +14,16 @@ class AuthFilter @Inject()(implicit override val mat: Materializer,
 
   def apply(next: (RequestHeader) => Future[Result])
            (request: RequestHeader): Future[Result] = {
-    request.cookies.get("shopId") match {
-      case Some(ck) =>
-        next(request)
-      case None => Future.successful(Results.Redirect("/login"))
+    if (!request.path.contains("/login")) {
+      request.cookies.get("shopId") match {
+        case Some(ck) =>
+          next(request)
+        case None => Future.successful(Results.Redirect("/login"))
+      }
+    } else {
+      next(request)
     }
+
   }
 
 }
