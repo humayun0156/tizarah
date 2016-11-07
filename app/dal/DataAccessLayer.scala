@@ -149,6 +149,14 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     transactionTableQuery returning transactionTableQuery.map(_.id) += transaction
   }
 
+  def getTransactionByAccountId(accountId: Long): List[Transaction] = {
+    val query = db.run {
+      transactionTableQuery.filter(t => t.accountId === accountId).to[List].result
+    }
+    Await.result(query, 100 milliseconds )
+  }
+
+
   //implicit val transactionResult = GetResult(t => Transaction(t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<<))
   /*implicit val tR = GetResult(t =>
     Transaction(t.nextLong(), t.nextLong, t.nextString, t.nextDouble(),
@@ -158,6 +166,12 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     //val query = sql"select t.description, t.amount,  from TRANSACTION t WHERE t.shop_id=$shopId and date(date)=$journalDate".as[Transaction]
     val query = sql"SELECT t.transaction_id, a.account_name, t.description, t.transaction_type, t.amount  from transaction t, account a where t.shop_id=$shopId and date(t.date)=$journalDate and t.account_id=a.account_id".as[JournalRep]
     Await.result(db.run(query), 2 seconds ).to[List]
+  }
+
+  implicit val ledgerIndexDataResult = GetResult(l => LedgerIndexData(l.<<, l.<<, l.<<, l.<<))
+  def getLedgerIndexData(shopId: Long): List[LedgerIndexData] = {
+    val query = sql"SELECT h.head_id, h.head_name, a.account_id, a.account_name from account a, account_head h where a.shop_id=$shopId and h.shop_id=$shopId and h.head_id=a.head_id".as[LedgerIndexData]
+    Await.result(db.run(query), 3 seconds).to[List]
   }
 
 }

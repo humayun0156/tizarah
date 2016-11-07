@@ -41,6 +41,11 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
   implicit val journalRepFormat = Json.format[JournalRep]
   implicit val jTranFormat = Json.format[JournalTransaction]
 
+  implicit val ledgerAccFormat = Json.format[LedgerAccount]
+  implicit val ledgerIndexAccFormat = Json.format[LedgerIndexAccount]
+  implicit val ledgerAccTransactionFormat = Json.format[LedgerAccountTransaction]
+
+
   private def successResponse(data: JsValue, message: String, status: Option[String] = Some("success")) = {
     status match {
       case Some(x) => obj("status" -> x, "data" -> data, "msg" -> message)
@@ -176,6 +181,46 @@ class MyTestController @Inject() (accessData: DataAccessLayer,
     sdf.format(new Date(longDate))
   }
 
+  def ledgerIndexPage() = Action.async { request =>
+    val data: List[LedgerIndexData] = accessData.getLedgerIndexData(getShopId(request))
+    var headMap: Map[Long, List[LedgerAccount]]= Map()
+    var headNameMap: Map[Long, String] = Map()
+    for (   i <- data ) {
+      if (headMap.contains(i.headId)) {
+        val tmp: List[LedgerAccount] = LedgerAccount(i.accountId, i.accountName)::headMap(i.headId)
+        headMap += (i.headId -> tmp)
+      } else {
+        val list = List(LedgerAccount(i.accountId, i.accountName))
+        headMap += (i.headId -> list)
+      }
+      headNameMap += (i.headId -> i.headName)
+    }
+    println("HeadNameMap: " + headNameMap)
+
+    val indexData = for (
+      key <- headMap.keys
+    ) yield LedgerIndexAccount(key, headNameMap(key), headMap(key))
+
+    println(indexData)
+    Future.successful(Ok(successResponse(Json.toJson(indexData), "")))
+  }
+
+  def ledgerAccount(id: Long) = Action.async { request =>
+    println("accountId: " + id)
+    val data: List[Transaction] = accessData.getTransactionByAccountId(id)
+    val debitTotal: Double =
+      data
+        .filter(t => t.transactionType.equals("debit"))
+        .map(t => t.amount).sum
+    val creditTotal: Double =
+      data
+        .filter(t => t.transactionType.equals("credit"))
+        .map(t => t.amount).sum
+
+    val ledgerTransaction = LedgerAccountTransaction(data, debitTotal, creditTotal)
+    Future.successful(Ok(successResponse(Json.toJson(ledgerTransaction), "")))
+  }
+
 }
 
 case class HeadForm(name: String)
@@ -185,3 +230,5 @@ case class TransactionForm(accountId: String, date: String, transactionType: Str
 
 case class JournalTransaction(debit: List[JournalRep], credit: List[JournalRep],
                               debitTotal: Double, creditTotal: Double)
+
+case class LedgerAccountTransaction(transactions: List[Transaction], debitTotal: Double, creditTotal: Double)

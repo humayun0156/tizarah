@@ -108,8 +108,59 @@ app.controller('journalCtrl', function ($scope, $timeout, $filter, JournalServic
         console.log("D: " + d);
         getTodayJournal(d);
     }
+});
 
 
+app.controller('ledgerCtrl', function ($scope, $timeout, $filter, LedgerService) {
+    $scope.firstName = "Humayun";
+
+    function getLedgerIndex() {
+        LedgerService.ledgerIndex().then(function (res) {
+            $scope.journalIndexData = res.data;
+            console.log(res.data[0].headId);
+            console.log(res.data);
+        }, function (err) {
+            //error
+        });
+    }
+    getLedgerIndex();
+});
+
+app.controller('ledgerAccountCtrl', function ($scope, $timeout, $filter, $location, LedgerService) {
+    $scope.firstName = "Humayun";
+    var x = window.location.pathname.split("/");
+    var accId = x[x.length-1];
+    console.log("accId: " + accId);
+
+    function getLedgerAccountData(id) {
+        LedgerService.ledgerAccData(id).then(function (res) {
+            $scope.ledgerTransactions = res.data.transactions;
+            $scope.debitTotal = res.data.debitTotal;
+            $scope.creditTotal = res.data.creditTotal;
+
+            console.log(res.data);
+        }, function (err) {
+            //error
+        });
+    }
+    getLedgerAccountData(accId);
+});
+
+
+app.filter('dateFormat', function() {
+    return function(input) {
+        var date = new Date(input);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDay();
+        return day + "/" + month + "/" + year;
+    };
+});
+
+app.filter('amountInBangla', function() {
+    return function (input) {
+        return Number(input).toLocaleString('bn');
+    }
 });
 
 /**
@@ -221,6 +272,44 @@ app.service("JournalService", function ($http, $q) {
     task.todayJournal = function (date) {
         var defer = $q.defer();
         var url = '/app/journal/today?date=' + date;
+        console.log("Request: " + url);
+        $http.get(url)
+            .success(function(res) {
+                task.taskList = res;
+                defer.resolve(res);
+            })
+            .error(function (err, status) {
+                defer.reject(err);
+            });
+        return defer.promise;
+    };
+
+    return task;
+});
+
+
+app.service("LedgerService", function ($http, $q) {
+    var task = this;
+    task.taskList = {};
+
+    task.ledgerIndex = function () {
+        var defer = $q.defer();
+        var url = '/app/ledger/index' ;
+        console.log("Request: " + url);
+        $http.get(url)
+            .success(function(res) {
+                task.taskList = res;
+                defer.resolve(res);
+            })
+            .error(function (err, status) {
+                defer.reject(err);
+            });
+        return defer.promise;
+    };
+
+    task.ledgerAccData = function (id) {
+        var defer = $q.defer();
+        var url = '/app/ledger/account/data/' + id ;
         console.log("Request: " + url);
         $http.get(url)
             .success(function(res) {

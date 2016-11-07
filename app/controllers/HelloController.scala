@@ -33,4 +33,12 @@ class HelloController @Inject() (addToken: CSRFAddToken) extends Controller {
   def journal = Action {
     Ok(views.html.journal())
   }
+
+  def ledger = Action {
+    Ok(views.html.ledgerindex())
+  }
+
+  def ledgerAccount(id: Long) = Action {
+    Ok(views.html.ledgeraccount(id))
+  }
 }
