@@ -49,7 +49,7 @@ INSERT INTO account(account_name, head_id, shop_id) VALUES ("Md. Robiul Islam", 
 CREATE TABLE transaction (
   shop_id INT(12) NOT NULL,
   account_id INT(12) NOT NULL,
-  description varchar(1000) NOT NULL,
+  description varchar(1000) CHARACTER SET utf8 NOT NULL,
   amount DOUBLE NOT NULL,
   date TIMESTAMP NOT NULL,
   transaction_type varchar(6) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE transaction (
   PRIMARY KEY (transaction_id),
   FOREIGN KEY (account_id) REFERENCES account(account_id),
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
-) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+) ENGINE = InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE user (

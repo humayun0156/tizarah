@@ -18,7 +18,7 @@
 
         <div class="panel panel-default">
 
-          <form role="form" id="newTransaction" data-ng-submit="addTransaction()">
+          <form role="form" id="newTransaction" data-ng-submit="addTransaction()" accept-charset="utf-8">
             <div class="panel-body">
 
               <div class="form-group">
@@ -78,9 +78,8 @@
                 </div>
                   <!-- /.table-responsive -->
               </div>
+              <button type="submit" data-ng-disabled="newTransaction.$invalid" id="submit" class="btn btn-primary">Create</button>
             </div>
-
-            <button type="submit" data-ng-disabled="newTransaction.$invalid" id="submit" class="btn btn-primary">Create</button>
           </form>
 
         </div>
