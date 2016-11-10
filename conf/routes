@@ -7,8 +7,8 @@ GET     /                           controllers.HomeController.index
 GET     /app/transaction            controllers.TransactionController.debit
 GET     /app/journal                controllers.JournalController.journal
 GET     /app/ledger                 controllers.LedgerController.ledger
-GET     /app/ledger/account/:id     controllers.LedgerController.ledgerAccount(id: Long)
-GET     /app/account                controllers.AccountController.createAccountHead
+GET     /app/ledger/account/:id     controllers.LedgerController.ledgerAccountPage(id: Long)
+GET     /app/account                controllers.AccountController.accountHead
 GET     /app/employee               controllers.EmpController.index
 GET     /app/employee/new           controllers.EmpController.create
 
@@ -18,9 +18,9 @@ GET     /blankpage                  controllers.HomeController.blankpage
 
 
 
-POST    /create/account/xyz        controllers.MyTestController.createAccountHead()
-POST    /create/account/abc         controllers.MyTestController.createSubAccount()
-POST    /create/account/transaction  controllers.MyTestController.createTransaction()
+POST    /create/account/xyz        controllers.AccountController.createAccountHead()
+POST    /create/account/abc         controllers.AccountController.createSubAccount()
+POST    /create/account/transaction  controllers.TransactionController.createTransaction()
 
 GET     /business                   controllers.BusinessController.index
 POST    /business/create            controllers.BusinessController.formSubmit
@@ -31,14 +31,14 @@ GET    /login                       controllers.LoginController.login
 GET    /logout                      controllers.LoginController.logout
 POST   /login/submit                controllers.LoginController.submit
 
-GET   /app/ledger/account/data/:id             controllers.MyTestController.ledgerAccount(id: Long)
-GET   /app/ledger/index             controllers.MyTestController.ledgerIndexPage
-GET   /app/journal/today           controllers.MyTestController.todayJournal(date: Long)
+GET   /app/ledger/account/data/:id             controllers.LedgerController.ledgerAccountData(id: Long)
+GET   /app/ledger/index             controllers.LedgerController.ledgerIndexPage
+GET   /app/journal/today            controllers.JournalController.todayJournal(date: Long)
 GET   /admin/business/all           controllers.MyTestController.allBusiness()
 GET   /admin/shop/all               controllers.MyTestController.allShop()
-GET   /admin/head/all               controllers.MyTestController.allAccountHead()
-GET   /admin/head/:id               controllers.MyTestController.headsByShopId(id: Long)
-GET   /admin/acc/sub/:headId        controllers.MyTestController.subAccountByHeadId(headId: Long)
+GET   /admin/head/all               controllers.AccountController.allAccountHead()
+GET   /admin/head/:id               controllers.AccountController.headsByShopId(id: Long)
+GET   /admin/acc/sub/:headId        controllers.AccountController.subAccountByHeadId(headId: Long)
 
 
 GET     /emp                        controllers.EmployeeController.index
