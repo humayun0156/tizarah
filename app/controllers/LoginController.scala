@@ -21,7 +21,7 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
 
   def login = Action { request =>
     request.cookies.get("shopId") match {
-      case Some(x) => Redirect(routes.HelloController.index())
+      case Some(x) => Redirect(routes.HomeController.index())
       case None => Ok(views.html.login("Login")).withNewSession
     }
   }

@@ -54,16 +54,16 @@
           <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
         </li>
         <li>
-          <a href="@routes.HelloController.debit()"><i class="fa fa-dashboard fa-fw"></i> Transaction</a>
+          <a href="@routes.TransactionController.debit()"><i class="fa fa-dashboard fa-fw"></i> Transaction</a>
         </li>
         <li>
-          <a href="@routes.HelloController.journal()"><i class="fa fa-dashboard fa-fw"></i> Journal</a>
+          <a href="@routes.JournalController.journal()"><i class="fa fa-dashboard fa-fw"></i> Journal</a>
         </li>
         <li>
-          <a href="@routes.HelloController.ledger()"><i class="fa fa-dashboard fa-fw"></i> Ledger</a>
+          <a href="@routes.LedgerController.ledger()"><i class="fa fa-dashboard fa-fw"></i> Ledger</a>
         </li>
         <li>
-          <a href="/"><i class="fa fa-dashboard fa-fw"></i> Employees</a>
+          <a href="@routes.EmpController.index()"><i class="fa fa-dashboard fa-fw"></i> Employees</a>
         </li>
         <li>
           <a href="@routes.BusinessController.index()"><i class="fa fa-dashboard fa-fw"></i> Business</a>
@@ -72,10 +72,10 @@
           <a href="#"><i class="fa fa-files-o fa-fw"></i> Create<span class="fa arrow"></span></a>
           <ul class="nav nav-second-level">
             <li>
-              <a href="@routes.HelloController.createAccountHead()">Create Account</a>
+              <a href="@routes.AccountController.createAccountHead()"> Create Account</a>
             </li>
             <li>
-              <a href="/">Create Employee</a>
+              <a href="@routes.EmpController.create()"> Create Employee</a>
             </li>
           </ul>
         </li>

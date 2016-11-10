@@ -3,13 +3,20 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.HelloController.index
-GET     /blankpage                  controllers.HelloController.blankpage
-GET     /create/account/head        controllers.HelloController.createAccountHead
-GET     /app/transaction/debit      controllers.HelloController.debit
-GET     /app/journal                controllers.HelloController.journal
-GET     /app/ledger                 controllers.HelloController.ledger
-GET     /app/ledger/account/:id         controllers.HelloController.ledgerAccount(id: Long)
+GET     /                           controllers.HomeController.index
+GET     /app/transaction            controllers.TransactionController.debit
+GET     /app/journal                controllers.JournalController.journal
+GET     /app/ledger                 controllers.LedgerController.ledger
+GET     /app/ledger/account/:id     controllers.LedgerController.ledgerAccount(id: Long)
+GET     /app/account                controllers.AccountController.createAccountHead
+GET     /app/employee               controllers.EmpController.index
+GET     /app/employee/new           controllers.EmpController.create
+
+
+GET     /blankpage                  controllers.HomeController.blankpage
+
+
+
 
 POST    /create/account/xyz        controllers.MyTestController.createAccountHead()
 POST    /create/account/abc         controllers.MyTestController.createSubAccount()
