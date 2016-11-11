@@ -13,7 +13,7 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
     $scope.subAccounts = [];
 
     function getAllAccountHeads() {
-        AccHeadService.getAll().then(function (res) {
+        AccHeadService.getAllHeadAccounts().then(function (res) {
             $scope.accountHeads = res.data;
             console.log($scope.accountHeads)
         }, function (err) {
@@ -187,9 +187,9 @@ app.service("AccHeadService", function ($http, $q) {
     var task = this;
     task.taskList = {};
 
-    task.getAll = function () {
+    task.getAllHeadAccounts = function () {
       var defer = $q.defer();
-      $http.get('/admin/head/all')
+      $http.get('/api/v1/head_accounts')
           .success(function(res) {
             task.taskList = res;
             defer.resolve(res);
@@ -200,22 +200,9 @@ app.service("AccHeadService", function ($http, $q) {
         return defer.promise;
     };
 
-    task.getAllSubAccount = function () {
-        var defer = $q.defer();
-        $http.get('/admin/subaccount/all')
-            .success(function(res) {
-                task.taskList = res;
-                defer.resolve(res);
-            })
-            .error(function (err, status) {
-                defer.reject(err);
-            });
-        return defer.promise;
-    };
-
     task.getSubAccountByHeadId = function (headId) {
         var defer = $q.defer();
-        $http.get('/admin/acc/sub/' + headId)
+        $http.get('/api/v1/head/' + headId + '/account')
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
@@ -227,7 +214,7 @@ app.service("AccHeadService", function ($http, $q) {
 
     task.addAccountHead = function (data) {
         var defer = $q.defer();
-        $http.post('/create/account/xyz', data)
+        $http.post('/api/v1/account/head/create', data)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
@@ -239,7 +226,7 @@ app.service("AccHeadService", function ($http, $q) {
 
     task.addSubAccount = function (data) {
         var defer = $q.defer();
-        $http.post('/create/account/abc', data)
+        $http.post('/api/v1/account/create', data)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
@@ -251,7 +238,7 @@ app.service("AccHeadService", function ($http, $q) {
 
     task.addTransaction = function (data) {
         var defer = $q.defer();
-        $http.post('/create/account/transaction', data)
+        $http.post('/api/v1/transaction/create', data)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
@@ -271,7 +258,7 @@ app.service("JournalService", function ($http, $q) {
 
     task.todayJournal = function (date) {
         var defer = $q.defer();
-        var url = '/app/journal/today?date=' + date;
+        var url = '/api/v1/journal/today?date=' + date;
         console.log("Request: " + url);
         $http.get(url)
             .success(function(res) {
@@ -294,7 +281,7 @@ app.service("LedgerService", function ($http, $q) {
 
     task.ledgerIndex = function () {
         var defer = $q.defer();
-        var url = '/app/ledger/index' ;
+        var url = '/api/v1/ledger/index' ;
         console.log("Request: " + url);
         $http.get(url)
             .success(function(res) {
@@ -309,7 +296,7 @@ app.service("LedgerService", function ($http, $q) {
 
     task.ledgerAccData = function (id) {
         var defer = $q.defer();
-        var url = '/app/ledger/account/data/' + id ;
+        var url = '/api/v1/ledger/account/' + id ;
         console.log("Request: " + url);
         $http.get(url)
             .success(function(res) {

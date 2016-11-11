@@ -38,6 +38,12 @@ class AccountController @Inject() (addToken: CSRFAddToken, accessData: DataAcces
     }
   }
 
+  def headAccounts() = Action.async { request =>
+    accessData.headsByShopId(getShopId(request)).map { res =>
+      Ok(successResponse(Json.toJson(res), ""))
+    }
+  }
+
   def subAccountByHeadId(headId: Long) = Action.async { request =>
     accessData.getSubAccountByHeadId(headId).map { res =>
       Ok(successResponse(Json.toJson(res), "subAccount Message"))
@@ -64,7 +70,7 @@ class AccountController @Inject() (addToken: CSRFAddToken, accessData: DataAcces
     )
   }
 
-  def createAccountHead() =  /*checkToken*/ {
+  def createHeadAccount() =  /*checkToken*/ {
     Action.async(parse.json) { implicit request =>
       logger.info("Head POST body json ==> " + request.body)
       request.body.validate[HeadForm].fold(

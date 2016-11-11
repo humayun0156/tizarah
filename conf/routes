@@ -9,18 +9,21 @@ GET     /app/journal                controllers.JournalController.journal
 GET     /app/ledger                 controllers.LedgerController.ledger
 GET     /app/ledger/account/:id     controllers.LedgerController.ledgerAccountPage(id: Long)
 GET     /app/account                controllers.AccountController.accountHead
-GET     /app/employee               controllers.EmpController.index
-GET     /app/employee/new           controllers.EmpController.create
-
 
 GET     /blankpage                  controllers.HomeController.blankpage
 
+POST  /api/v1/account/head/create         controllers.AccountController.createHeadAccount()
+POST  /api/v1/account/create              controllers.AccountController.createSubAccount()
+POST  /api/v1/transaction/create          controllers.TransactionController.createTransaction()
 
+GET   /api/v1/ledger/account/:id              controllers.LedgerController.ledgerAccountData(id: Long)
+GET   /api/v1/ledger/index                    controllers.LedgerController.ledgerIndexPage
+GET   /api/v1/journal/today                   controllers.JournalController.todayJournal(date: Long)
+GET   /api/v1/head_accounts                   controllers.AccountController.headAccounts
+GET   /api/v1/head/:headId/account            controllers.AccountController.subAccountByHeadId(headId: Long)
 
-
-POST    /create/account/xyz        controllers.AccountController.createAccountHead()
-POST    /create/account/abc         controllers.AccountController.createSubAccount()
-POST    /create/account/transaction  controllers.TransactionController.createTransaction()
+GET   /admin/business/all           controllers.MyTestController.allBusiness()
+GET   /admin/shop/all               controllers.MyTestController.allShop()
 
 GET     /business                   controllers.BusinessController.index
 POST    /business/create            controllers.BusinessController.formSubmit
@@ -31,16 +34,11 @@ GET    /login                       controllers.LoginController.login
 GET    /logout                      controllers.LoginController.logout
 POST   /login/submit                controllers.LoginController.submit
 
-GET   /app/ledger/account/data/:id             controllers.LedgerController.ledgerAccountData(id: Long)
-GET   /app/ledger/index             controllers.LedgerController.ledgerIndexPage
-GET   /app/journal/today            controllers.JournalController.todayJournal(date: Long)
-GET   /admin/business/all           controllers.MyTestController.allBusiness()
-GET   /admin/shop/all               controllers.MyTestController.allShop()
-GET   /admin/head/all               controllers.AccountController.allAccountHead()
-GET   /admin/head/:id               controllers.AccountController.headsByShopId(id: Long)
-GET   /admin/acc/sub/:headId        controllers.AccountController.subAccountByHeadId(headId: Long)
 
 
+# Test
+GET     /app/employee               controllers.EmpController.index
+GET     /app/employee/new           controllers.EmpController.create
 GET     /emp                        controllers.EmployeeController.index
 GET     /emp/list                   controllers.EmployeeController.list()
 POST    /emp/create                 controllers.EmployeeController.create()
