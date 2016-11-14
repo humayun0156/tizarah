@@ -1,55 +1,55 @@
 
-
+create database tizarah character set utf8 collate utf8_general_ci;
 
 CREATE TABLE business (
   business_id INT(8) NOT NULL AUTO_INCREMENT,
-  business_name VARCHAR(256) NOT NULL,
+  business_name VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (business_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 INSERT INTO business(business_name) VALUES ("shahantrade");
 
 CREATE TABLE shop (
   shop_id INT(12) NOT NULL AUTO_INCREMENT,
-  shop_name VARCHAR(256) NOT NULL,
-  address VARCHAR(256) NOT NULL,
+  shop_name VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  address VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   business_id INT(8) NOT NULL,
   PRIMARY KEY (shop_id),
   FOREIGN KEY (business_id) REFERENCES business(business_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 INSERT INTO shop(shop_name, address, business_id) VALUES ("mill", "Lalmonirhat", 1);
 
 
 CREATE TABLE account_head (
   head_id INT(12) NOT NULL AUTO_INCREMENT,
-  head_name VARCHAR(256) NOT NULL,
+  head_name VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   shop_id INT(12) NOT NULL,
   PRIMARY KEY (head_id),
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 INSERT INTO account_head(head_name, shop_id) VALUES ("Paddy Head", 1);
 
 
 CREATE TABLE account (
   account_id INT(12) NOT NULL AUTO_INCREMENT,
-  account_name VARCHAR(256) NOT NULL,
-  address VARCHAR(256) NOT NULL,
-  phone_number VARCHAR(20) NOT NULL,
+  account_name VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  address VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  phone_number VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   head_id INT(12) NOT NULL,
   shop_id INT(12) NOT NULL,
   PRIMARY KEY (account_id),
   FOREIGN KEY (head_id) REFERENCES account_head(head_id),
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-INSERT INTO account(account_name, head_id, shop_id) VALUES ("Md. Robiul Islam", 1, 1);
+INSERT INTO account(account_name, address, phone_number, head_id, shop_id) VALUES ("Md. Robiul Islam", "Rangpur", "01556306560", 1, 1);
 
 CREATE TABLE transaction (
   shop_id INT(12) NOT NULL,
   account_id INT(12) NOT NULL,
-  description varchar(1000) CHARACTER SET utf8 NOT NULL,
+  description varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   amount DOUBLE NOT NULL,
   date TIMESTAMP NOT NULL,
   transaction_type varchar(6) NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE transaction (
   PRIMARY KEY (transaction_id),
   FOREIGN KEY (account_id) REFERENCES account(account_id),
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
-) ENGINE = InnoDB DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE user (
@@ -65,7 +65,7 @@ CREATE TABLE user (
   user_name VARCHAR(256) NOT NULL,
   password VARCHAR(256) NOT NULL,
   PRIMARY KEY (user_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 insert INTO user(user_name, password) VALUES ('tizarah', 'tizarah');
 insert INTO user(user_name, password) VALUES ('tizarah', 'tizarah123');
 insert INTO user(user_name, password) VALUES ('tizarah123', 'tizarah');
@@ -76,7 +76,7 @@ CREATE TABLE working_shop (
   PRIMARY KEY (shop_id, user_id),
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id),
   FOREIGN KEY (user_id) REFERENCES user(user_id)
-) ENGINE = InnoDB;
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 INSERT INTO working_shop VALUES (1, 1);
 

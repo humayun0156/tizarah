@@ -13,7 +13,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "2.0.2",
   "com.typesafe.play" %% "play-slick-evolutions" % "2.0.2",
   "com.h2database" % "h2" % "1.4.190",
-  "mysql"               % "mysql-connector-java" % "5.1.39",
+  "mysql"               % "mysql-connector-java" % "6.0.5",
   "org.scalaz" %% "scalaz-core" % "7.2.6",
 
   // WebJars (i.e. client-side) dependencies
