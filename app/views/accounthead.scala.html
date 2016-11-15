@@ -20,7 +20,7 @@
 
       <div class="panel panel-default">
         <div class="panel-heading">
-          Create Head Account. {{myHeader}}
+          Create Head Account
         </div>
         <div class="panel-body">
           <form role="form" id="newHeadForm" data-ng-submit="addAccountHead()">
@@ -66,11 +66,11 @@
               </div>
               <div class="form-group">
                 <label>Phone</label>
-                <input type="text" data-ng-model="newSubAccount.phoneNumber" class="form-control" placeholder="Enter mobile umber">
+                <input type="text" data-ng-model="newSubAccount.phoneNumber" class="form-control" placeholder="Enter mobile umber" required>
               </div>
               <div class="form-group">
                 <label>Address</label>
-                <input type="text" data-ng-model="newSubAccount.address" class="form-control" placeholder="Enter address">
+                <input type="text" data-ng-model="newSubAccount.address" class="form-control" placeholder="Enter address" required>
               </div>
             </div>
             <button type="submit" data-ng-disabled="newSubAccount.$invalid" class="btn btn-primary">Create</button>

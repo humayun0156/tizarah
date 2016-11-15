@@ -11,7 +11,6 @@
 
     <div class="row" data-ng-controller="ledgerCtrl">
       <div class="col-lg-12">
-        {{firstName}}
         <ul data-ng-repeat="x in journalIndexData">
           <li>{{x.headId}} {{x.headName}}</li>
           <ul data-ng-repeat="y in x.accounts">

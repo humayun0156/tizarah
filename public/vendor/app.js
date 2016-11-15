@@ -2,8 +2,6 @@
 var app = angular.module('myApp', ['ui.bootstrap']);
 
 app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
-    $scope.firstName = "Humayun";
-    $scope.lastName = "Kabir";
     $scope.myHeader = "Hello world!";
     $timeout(function(){
         $scope.myHeader = "How are you today?"
@@ -76,7 +74,7 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
 
 
 app.controller('journalCtrl', function ($scope, $timeout, $filter, JournalService) {
-    $scope.firstName = "Humayun";
+
     $scope.date = $filter('date')(new Date(), "yyyy-MM-dd");
 
     function getTodayJournal(date) {
