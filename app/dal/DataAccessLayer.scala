@@ -149,11 +149,15 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     transactionTableQuery returning transactionTableQuery.map(_.id) += transaction
   }
 
-  def getTransactionByAccountId(accountId: Long): List[Transaction] = {
+  def getTransactionsByAccountId(accountId: Long): List[Transaction] = {
     val query = db.run {
       transactionTableQuery.filter(t => t.accountId === accountId).to[List].result
     }
     Await.result(query, 100 milliseconds )
+  }
+
+  def getTransactionById(transactionId: Long): Future[Option[Transaction]] = db.run {
+    transactionTableQuery.filter(t => t.id === transactionId).result.headOption
   }
 
 

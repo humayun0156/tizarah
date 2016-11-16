@@ -73,6 +73,22 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
 });
 
 
+app.controller('transactionCtrl', function ($scope, $timeout, TransactionService) {
+    var x = window.location.pathname.split("/");
+    var transactionId = x[x.length-1];
+    console.log("tranId: " + transactionId);
+
+    function getTransactionData(id) {
+        TransactionService.transactionById(id).then(function (res) {
+            $scope.transaction = res.data;
+            console.log("Response: " + res.data)
+        }, function (err) {
+           console.log("error")
+        })
+    }
+    getTransactionData(transactionId);
+});
+
 app.controller('journalCtrl', function ($scope, $timeout, $filter, JournalService) {
 
     $scope.date = $filter('date')(new Date(), "yyyy-MM-dd");
@@ -125,7 +141,6 @@ app.controller('ledgerCtrl', function ($scope, $timeout, $filter, LedgerService)
 });
 
 app.controller('ledgerAccountCtrl', function ($scope, $timeout, $filter, $location, LedgerService) {
-    $scope.firstName = "Humayun";
     var x = window.location.pathname.split("/");
     var accId = x[x.length-1];
     console.log("accId: " + accId);
@@ -243,6 +258,29 @@ app.service("AccHeadService", function ($http, $q) {
             }).error(function (err, status) {
             defer.reject(err);
         });
+        return defer.promise;
+    };
+
+    return task;
+});
+
+
+app.service("TransactionService", function ($http, $q) {
+    var task = this;
+    task.taskList = {};
+
+    task.transactionById = function (id) {
+        var defer = $q.defer();
+        var url = '/api/v1/transaction/view/' + id;
+        console.log("Request: " + url);
+        $http.get(url)
+            .success(function(res) {
+                task.taskList = res;
+                defer.resolve(res);
+            })
+            .error(function (err, status) {
+                defer.reject(err);
+            });
         return defer.promise;
     };
 

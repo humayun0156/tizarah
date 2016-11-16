@@ -49,7 +49,7 @@ class LedgerController @Inject() (accessData: DataAccessLayer)
 
   def ledgerAccountData(id: Long) = Action.async { request =>
     println("accountId: " + id)
-    val data: List[Transaction] = accessData.getTransactionByAccountId(id)
+    val data: List[Transaction] = accessData.getTransactionsByAccountId(id)
     val debitTotal: Double =
       data
         .filter(t => t.transactionType.equals("debit"))

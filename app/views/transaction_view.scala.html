@@ -1,5 +1,24 @@
 @(id: Long)
 
 @main("Transaction View") {
-  Transaction - @id
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header">Transaction @id</h1>
+      </div>
+    </div>
+
+    <div class="row" data-ng-controller="transactionCtrl">
+      <div class="col-lg-12">
+        Head Account: {{}} <br/>
+        Account: {{}} <br/>
+        Date: {{transaction.date.time | dateFormat}} Transaction: {{}} <br/>
+        Description: {{transaction.description}} <br/>
+        Amount: {{transaction.amount}}
+      </div>
+    </div>
+
+  </div>
+
 }
