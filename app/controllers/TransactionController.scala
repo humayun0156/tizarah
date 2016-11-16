@@ -47,6 +47,14 @@ class TransactionController @Inject() (accessData: DataAccessLayer)
         }
       }
     )
+  }
 
+  def view(id: Long) = Action {
+    Ok(views.html.transaction_view(id))
+  }
+
+  def viewTransaction(id: Long) = Action.async { request =>
+    logger.info("Requested transactionId: " + id)
+    Future.successful(Ok)
   }
 }

@@ -81,8 +81,8 @@ app.controller('journalCtrl', function ($scope, $timeout, $filter, JournalServic
         JournalService.todayJournal(date).then(function (res) {
             $scope.debitTranList = res.data.debit;
             $scope.creditTranList = res.data.credit;
-            $scope.debitTotal = Number(res.data.debitTotal).toLocaleString('bn');
-            $scope.creditTotal = Number(res.data.creditTotal).toLocaleString('bn');
+            $scope.debitTotal = res.data.debitTotal;
+            $scope.creditTotal = res.data.creditTotal;
 
             console.log(res.data);
             console.log($scope.debitTranList);

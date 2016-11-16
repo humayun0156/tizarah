@@ -40,14 +40,14 @@
                   <tfoot>
                     <tr >
                       <td colspan="2">Total: </td>
-                      <td><b>{{debitTotal}}</b></td>
+                      <td align="right"><b>{{debitTotal | amountInBangla}}</b></td>
                     </tr>
                   </tfoot>
                   <tbody>
                     <tr data-ng-repeat="x in debitTranList">
-                      <td>{{x.transactionId}}</td>
+                      <td align="right"><a href="/app/transaction/view/{{x.transactionId}}">{{x.transactionId}}</a></td>
                       <td>{{x.accountName}}</td>
-                      <td>{{x.amount}}</td>
+                      <td align="right">{{x.amount | amountInBangla}}</td>
                     </tr>
 
                   </tbody>
@@ -69,14 +69,14 @@
                   <tfoot>
                     <tr >
                       <td colspan="2">Total: </td>
-                      <td><b>{{creditTotal}}</b></td>
+                      <td align="right"><b>{{creditTotal | amountInBangla}}</b></td>
                     </tr>
                   </tfoot>
                   <tbody>
                     <tr data-ng-repeat="y in creditTranList">
-                      <td>{{y.transactionId}}</td>
+                      <td align="right"><a href="/app/transaction/view/{{y.transactionId}}">{{y.transactionId}}</a></td>
                       <td>{{y.accountName}}</td>
-                      <td>{{y.amount}}</td>
+                      <td align="right">{{y.amount | amountInBangla}}</td>
                     </tr>
 
                   </tbody>

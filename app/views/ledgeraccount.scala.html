@@ -15,6 +15,7 @@
           <thead>
             <tr>
               <th>Date</th>
+              <th>Voucher</th>
               <th>Particular</th>
               <th>Debit</th>
               <th>Credit</th>
@@ -23,14 +24,15 @@
           <tbody>
             <tr data-ng-repeat="t in ledgerTransactions">
               <td>{{t.date.time | dateFormat}}</td>
+              <td align="right"><a href="/app/transaction/view/{{t.id}}">{{t.id}}</a></td>
               <td>{{t.description}}</td>
-              <td>{{t.transactionType == 'debit' ? (t.amount | amountInBangla) : '&nbsp;'}}</td>
-              <td>{{t.transactionType == 'credit' ? (t.amount | amountInBangla) : '&nbsp;'}}</td>
+              <td align="right">{{t.transactionType == 'debit' ? (t.amount | amountInBangla) : '&nbsp;'}}</td>
+              <td align="right">{{t.transactionType == 'credit' ? (t.amount | amountInBangla) : '&nbsp;'}}</td>
             </tr>
             <tr>
-              <td colspan="2"><b>Total: </b></td>
-              <td>{{debitTotal | amountInBangla}}</td>
-              <td>{{creditTotal | amountInBangla}}</td>
+              <td colspan="3"><b>Total: </b></td>
+              <td align="right">{{debitTotal | amountInBangla}}</td>
+              <td align="right">{{creditTotal | amountInBangla}}</td>
             </tr>
           </tbody>
         </table>
