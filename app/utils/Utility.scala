@@ -31,6 +31,7 @@ object Utility {
 
   implicit val transactionForm = Json.format[TransactionForm]
   implicit val transactionFormat = Json.format[Transaction]
+  implicit val transactionViewFormat = Json.format[TransactionView]
 
   implicit val journalRepFormat = Json.format[JournalRep]
   implicit val jTranFormat = Json.format[JournalTransaction]

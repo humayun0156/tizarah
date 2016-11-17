@@ -11,9 +11,10 @@
 
     <div class="row" data-ng-controller="transactionCtrl">
       <div class="col-lg-12">
-        Head Account: {{}} <br/>
-        Account: {{}} <br/>
-        Date: {{transaction.date.time | dateFormat}} Transaction: {{}} <br/>
+        Head Account: {{transaction.headName}} <br/>
+        Account: {{transaction.accountName}} <br/>
+        Address: {{transaction.address}}, Phone: {{transaction.phoneNumber}} <br/>
+        Date: {{transaction.date.time | dateFormat}} Transaction: {{transaction.transactionType}} <br/>
         Description: {{transaction.description}} <br/>
         Amount: {{transaction.amount}}
       </div>

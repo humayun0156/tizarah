@@ -56,10 +56,15 @@ class TransactionController @Inject() (accessData: DataAccessLayer)
   def viewTransaction(id: Long) = Action.async { request =>
     logger.info("Requested transactionId: " + id)
 
-    accessData.getTransactionById(id).map {
+    accessData.getTransactionById(id).map { res =>
+      Future.successful(Ok(successResponse(Json.toJson(res), "")))
+    }.getOrElse(Future.successful(Ok(successResponse(Json.toJson(""), "not found", None))))
+
+    // Future[Option[Transaction]]
+    /*accessData.getTransactionById(id).map {
       case Some(x) => Ok(successResponse(Json.toJson(x), ""))
       case None => Ok(successResponse(Json.toJson(""), ""))
-    }.recover {case ex => Ok("fail")}
+    }.recover {case ex => Ok("fail")}*/
 
   }
 }
