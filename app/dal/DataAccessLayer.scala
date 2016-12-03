@@ -175,4 +175,23 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     Await.result(db.run(query), 3 seconds).to[List]
   }
 
+
+  /**********************************************
+    ********** Stock_Item table *****************
+    **********************************************/
+  private class StockItemTable(tag: Tag) extends Table[StockItem](tag, "stock_item") {
+    def id: Rep[Long] = column[Long]("item_id", O.PrimaryKey, O.AutoInc)
+    def itemName: Rep[String] = column[String]("item_name")
+    def shopId: Rep[Long] = column[Long]("shop_id")
+
+    def shopIdFk = foreignKey("shop_id_fk", shopId, shopTableQuery)(_.id)
+
+    def * = (shopId, itemName, id.?) <> (StockItem.tupled, StockItem.unapply)
+  }
+
+  private val stockItemTableQuery = TableQuery[StockItemTable]
+
+  def insertStockItem(stockItem: StockItem): Future[Long] = db.run {
+    stockItemTableQuery returning stockItemTableQuery.map(_.id) += stockItem
+  }
 }

@@ -1,0 +1,97 @@
+@()
+
+@main("Stock") {
+  <div class="container-fluid">
+    <div class="row" data-ng-controller="stockCtrl">
+      <div class="col-lg-12">
+        <h1 class="page-header">Stock</h1>
+
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#home" data-toggle="tab" aria-expanded="true">Stock</a>
+            </li>
+            <li class=""><a href="#newItem" data-toggle="tab" aria-expanded="false">New Item</a>
+            </li>
+            <li class=""><a href="#messages" data-toggle="tab" aria-expanded="false">Messages</a>
+            </li>
+            <li ><a href="#settings" data-toggle="tab" aria-expanded="false">Settings</a>
+            </li>
+          </ul>
+
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div class="tab-pane fade active in" id="home">
+              <h4>&nbsp;</h4>
+              <table class="table table-striped table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Item name</th>
+                    <th>Incoming</th>
+                    <th>Debit</th>
+                    <th>total</th>
+                    <th>Credit</th>
+                    <th>In hand</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td align="right">test data</td>
+                    <td>test data</td>
+                    <td align="right">test data</td>
+                    <td align="right">test data</td>
+                    <td align="right">test data</td>
+                    <td align="right">test data</td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+
+            </div>
+
+
+
+            <div class="tab-pane fade" id="newItem">
+              <h4>Add New Stock Item</h4>
+                <!-- Alert messages -->
+              <div ng-repeat="alert in alerts">
+                <notification ng-model="alert"></notification>
+              </div>
+
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Stock Item
+                </div>
+                <div class="panel-body">
+                  <form role="form" id="newStockItemForm" data-ng-submit="addStockItem()" class="ng-pristine ng-invalid ng-invalid-required">
+                    <div class="form-group">
+                      <label class="ng-binding">Item Name: </label>
+                      <input type="text" data-ng-model="newStockItem.itemName" placeholder="Enter item name" class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" required="">
+
+                    </div>
+                    <button type="submit" data-ng-disabled="newStockItemForm.$invalid" id="submit" class="btn btn-primary">Create</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="messages">
+              <h4>Messages Tab</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+
+
+            <div class="tab-pane fade" id="settings">
+              <h4>Settings Tab</h4>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            </div>
+          </div>
+
+      </div>
+        <!-- /.col-lg-12 -->
+
+    </div>
+  </div>
+}

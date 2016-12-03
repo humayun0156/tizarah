@@ -160,6 +160,27 @@ app.controller('ledgerAccountCtrl', function ($scope, $timeout, $filter, $locati
 });
 
 
+app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
+
+    $scope.newStockItem = {};
+    $scope.addStockItem = function () {
+        StockService.addStockItem($scope.newStockItem).then(function (res) {
+
+            $scope.newStockItem = {};
+            showAlertMessage(res.status, res.msg)
+        })
+    };
+
+    $scope.alerts = [];
+    function showAlertMessage(status, message) {
+        if (status == "success") {
+            $scope.alerts.push({type: "alert-success", title: "SUCCESS", content: message})
+        } else if (status == "error") {
+            $scope.alerts.push({type: "alert-danger", title: "ERROR", content: message})
+        }
+    }
+});
+
 app.filter('dateFormat', function() {
     return function(input) {
         var date = new Date(input);
@@ -342,6 +363,26 @@ app.service("LedgerService", function ($http, $q) {
             .error(function (err, status) {
                 defer.reject(err);
             });
+        return defer.promise;
+    };
+
+    return task;
+});
+
+
+app.service("StockService", function ($http, $q) {
+    var task = this;
+    task.taskList = {};
+
+    task.addStockItem = function (data) {
+        var defer = $q.defer();
+        $http.post('/api/v1/stock/item/create', data)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
         return defer.promise;
     };
 

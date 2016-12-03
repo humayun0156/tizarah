@@ -10,12 +10,14 @@ GET     /app/journal                controllers.JournalController.journal
 GET     /app/ledger                 controllers.LedgerController.ledger
 GET     /app/ledger/account/:id     controllers.LedgerController.ledgerAccountPage(id: Long)
 GET     /app/account                controllers.AccountController.accountHead
+GET     /app/stock                  controllers.StockController.index
 
 GET     /blankpage                  controllers.HomeController.blankpage
 
 POST  /api/v1/account/head/create         controllers.AccountController.createHeadAccount()
 POST  /api/v1/account/create              controllers.AccountController.createSubAccount()
 POST  /api/v1/transaction/create          controllers.TransactionController.createTransaction()
+POST  /api/v1/stock/item/create           controllers.StockController.createStockItem()
 
 GET   /api/v1/transaction/view/:id                 controllers.TransactionController.viewTransaction(id: Long)
 GET   /api/v1/ledger/account/:id              controllers.LedgerController.ledgerAccountData(id: Long)
