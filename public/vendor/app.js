@@ -165,11 +165,31 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
     $scope.newStockItem = {};
     $scope.addStockItem = function () {
         StockService.addStockItem($scope.newStockItem).then(function (res) {
-
             $scope.newStockItem = {};
             showAlertMessage(res.status, res.msg)
         })
     };
+
+    $scope.stockTransaction = {};
+    $scope.addStockTransaction = function () {
+        StockService.addStockTransaction($scope.stockTransaction).then(function (res) {
+            $scope.stockTransaction = {};
+            showAlertMessage(res.status, res.msg)
+        })
+    };
+
+    function getStockItems() {
+        StockService.getStockItems().then(function (res) {
+            $scope.stockItems = res.data;
+
+            console.log(res.data);
+        }, function (err) {
+            //error
+        });
+    }
+
+    getStockItems();
+
 
     $scope.alerts = [];
     function showAlertMessage(status, message) {
@@ -377,6 +397,30 @@ app.service("StockService", function ($http, $q) {
     task.addStockItem = function (data) {
         var defer = $q.defer();
         $http.post('/api/v1/stock/item/create', data)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
+        return defer.promise;
+    };
+
+    task.addStockTransaction = function (data) {
+        var defer = $q.defer();
+        $http.post('/api/v1/stock/transaction/create', data)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
+        return defer.promise;
+    };
+
+    task.getStockItems = function (data) {
+        var defer = $q.defer();
+        $http.get('/api/v1/stock/item/all', data)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
