@@ -12,7 +12,7 @@
             </li>
             <li class=""><a href="#newItem" data-toggle="tab" aria-expanded="false">New Item</a>
             </li>
-            <li class=""><a href="#messages" data-toggle="tab" aria-expanded="false">Messages</a>
+            <li class=""><a href="#stockTransaction" data-toggle="tab" aria-expanded="false">Stock Transaction</a>
             </li>
             <li ><a href="#settings" data-toggle="tab" aria-expanded="false">Settings</a>
             </li>
@@ -27,21 +27,21 @@
                   <tr>
                     <th>Item name</th>
                     <th>Incoming</th>
-                    <th>Debit</th>
+                    <th>Import</th>
                     <th>total</th>
-                    <th>Credit</th>
+                    <th>Export</th>
                     <th>In hand</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <tr>
-                    <td align="right">test data</td>
-                    <td>test data</td>
-                    <td align="right">test data</td>
-                    <td align="right">test data</td>
-                    <td align="right">test data</td>
-                    <td align="right">test data</td>
+                  <tr data-ng-repeat="item in stockItems">
+                    <td >{{item.itemName}}</td>
+                    <td align="right">{{item.initialAmount | amountInBangla}}</td>
+                    <td align="right">{{item.importAmount | amountInBangla}}</td>
+                    <td align="right">{{(item.importAmount + item.initialAmount) | amountInBangla}}</td>
+                    <td align="right">{{item.exportAmount | amountInBangla}}</td>
+                    <td align="right">{{(item.importAmount + item.initialAmount - item.exportAmount) | amountInBangla}}</td>
                   </tr>
 
                 </tbody>
@@ -59,15 +59,14 @@
                 <notification ng-model="alert"></notification>
               </div>
 
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  Stock Item
-                </div>
+              <div class="panel panel-default col-lg-6">
                 <div class="panel-body">
                   <form role="form" id="newStockItemForm" data-ng-submit="addStockItem()" class="ng-pristine ng-invalid ng-invalid-required">
                     <div class="form-group">
-                      <label class="ng-binding">Item Name: </label>
+                      <label class="ng-binding">Item Name </label>
                       <input type="text" data-ng-model="newStockItem.itemName" placeholder="Enter item name" class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" required="">
+                      <label class="ng-binding">Initial Amount </label>
+                      <input type="number" data-ng-model="newStockItem.initialAmount" placeholder="Item initial amount" class="form-control ng-pristine ng-untouched ng-empty ng-invalid ng-invalid-required" required="">
 
                     </div>
                     <button type="submit" data-ng-disabled="newStockItemForm.$invalid" id="submit" class="btn btn-primary">Create</button>
@@ -77,9 +76,58 @@
             </div>
 
 
-            <div class="tab-pane fade" id="messages">
-              <h4>Messages Tab</h4>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <div class="tab-pane fade" id="stockTransaction">
+              <h4>Stock Transaction</h4>
+
+              <div ng-repeat="alert in alerts">
+                <notification ng-model="alert"></notification>
+              </div>
+
+              <div class="panel panel-default col-lg-6">
+
+                <div class="panel-body">
+                  <form role="form" id="stockTransactionForm" data-ng-submit="addStockTransaction()" class="ng-pristine ng-invalid ng-invalid-required">
+                    <div class="form-group">
+                      <label>Item Name: </label>
+                      <select class="form-control" data-ng-model="stockTransaction.stockItemId">
+                        <option data-ng-repeat="item in stockItems" value="{{item.id}}">{{item.itemName}}</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Stock Transaction: </label>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="importExport" data-ng-model="stockTransaction.importExport" value="import">Import
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="importExport" data-ng-model="stockTransaction.importExport" value="export" required>Export
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="datepicker">Date</label>
+                      <input type="text" data-ng-model="stockTransaction.date" id="datepicker" class="form-control" readonly required>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Amount</label>
+                      <input type="number" data-ng-model="stockTransaction.amount" placeholder="Item amount" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Description</label>
+                      <textarea data-ng-model="stockTransaction.description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" data-ng-disabled="newStockItemForm.$invalid" id="submit" class="btn btn-primary">Create</button>
+                  </form>
+                </div>
+              </div>
+
             </div>
 
 
