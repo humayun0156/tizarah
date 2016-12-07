@@ -18,6 +18,7 @@ POST  /api/v1/account/head/create         controllers.AccountController.createHe
 POST  /api/v1/account/create              controllers.AccountController.createSubAccount()
 POST  /api/v1/transaction/create          controllers.TransactionController.createTransaction()
 POST  /api/v1/stock/item/create           controllers.StockController.createStockItem()
+POST  /api/v1/stock/transaction/create    controllers.StockController.createStockTransaction()
 
 GET   /api/v1/transaction/view/:id                 controllers.TransactionController.viewTransaction(id: Long)
 GET   /api/v1/ledger/account/:id              controllers.LedgerController.ledgerAccountData(id: Long)
@@ -25,6 +26,7 @@ GET   /api/v1/ledger/index                    controllers.LedgerController.ledge
 GET   /api/v1/journal/today                   controllers.JournalController.todayJournal(date: Long)
 GET   /api/v1/head_accounts                   controllers.AccountController.headAccounts
 GET   /api/v1/head/:headId/account            controllers.AccountController.subAccountByHeadId(headId: Long)
+GET   /api/v1/stock/item/all                  controllers.StockController.getStockItems()
 
 GET   /admin/business/all           controllers.MyTestController.allBusiness()
 GET   /admin/shop/all               controllers.MyTestController.allShop()
