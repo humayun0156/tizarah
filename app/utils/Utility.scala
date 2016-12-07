@@ -25,6 +25,8 @@ object Utility {
   implicit val subFormFormat = Json.format[SubAccountForm]
 
   implicit val stockItemFormFormat = Json.format[StockItemForm]
+  implicit val stockItemFormat = Json.format[StockItem]
+  implicit val stockTransactionFormFormat = Json.format[StockTransactionForm]
 
   implicit val rds: Reads[Timestamp] = (__ \ "time").read[Long].map{ long => new Timestamp(long) }
   implicit val wrs: Writes[Timestamp] = (__ \ "time").write[Long].contramap{ (a: Timestamp) => a.getTime }
@@ -77,4 +79,7 @@ case class JournalTransaction(debit: List[JournalRep], credit: List[JournalRep],
 case class LedgerAccountTransaction(transactions: List[Transaction], debitTotal: Double,
                                     creditTotal: Double)
 
-case class StockItemForm(itemName: String)
+case class StockItemForm(itemName: String, initialAmount: Double)
+
+case class StockTransactionForm(stockItemId: String, amount: Double, importExport: String,
+                                date: String, description: String = "")
