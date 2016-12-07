@@ -55,10 +55,43 @@ CREATE TABLE transaction (
   transaction_type varchar(6) NOT NULL,
   transaction_id INT(12) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (transaction_id),
-  FOREIGN KEY (account_id) REFERENCES account(account_id),
+  FOREIGN KEY (account_id) REFERENCES account(account_id) on update NO ACTION on delete NO ACTION,
   FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+
+CREATE TABLE stock_item(
+  shop_id INT(12) NOT NULL,
+  item_name varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  initial_amount INT(12),
+  import_amount INT(12) DEFAULT 0,
+  export_amount INT(12) DEFAULT 0,
+  item_id INT(12) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (item_id),
+  FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE TABLE stock_transaction(
+  stock_item_id INT(12) NOT NULL,
+  amount INT(12) NOT NULL,
+  import_export VARCHAR(6) NOT NULL,
+  date TIMESTAMP NOT NULL,
+  description VARCHAR(3000),
+  id INT(12) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY(id),
+  FOREIGN KEY (stock_item_id) REFERENCES stock_item(item_id)
+)ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+delimiter //
+CREATE TRIGGER  stock_tran_insert AFTER INSERT ON stock_transaction
+FOR EACH ROW
+  BEGIN
+    IF NEW.import_export = 'import' THEN
+      UPDATE stock_item SET import_amount = import_amount + NEW.amount WHERE NEW.stock_item_id = stock_item.item_id;
+    ELSE
+      UPDATE stock_item SET export_amount = export_amount + NEW.amount WHERE NEW.stock_item_id = stock_item.item_id;
+    END IF;
+  END;//
 
 CREATE TABLE user (
   user_id INT(12) NOT NULL AUTO_INCREMENT,
