@@ -183,15 +183,45 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     def id: Rep[Long] = column[Long]("item_id", O.PrimaryKey, O.AutoInc)
     def itemName: Rep[String] = column[String]("item_name")
     def shopId: Rep[Long] = column[Long]("shop_id")
+    def initialAmount: Rep[Double] = column[Double]("initial_amount")
+    def importAmount: Rep[Double] = column[Double]("import_amount")
+    def exportAmount: Rep[Double] = column[Double]("export_amount")
 
     def shopIdFk = foreignKey("shop_id_fk", shopId, shopTableQuery)(_.id)
 
-    def * = (shopId, itemName, id.?) <> (StockItem.tupled, StockItem.unapply)
+    def * = (shopId, itemName, initialAmount, importAmount, exportAmount, id.?) <> (StockItem.tupled, StockItem.unapply)
   }
 
   private val stockItemTableQuery = TableQuery[StockItemTable]
 
   def insertStockItem(stockItem: StockItem): Future[Long] = db.run {
     stockItemTableQuery returning stockItemTableQuery.map(_.id) += stockItem
+  }
+
+  def getStockItems(shopId: Long): Future[List[StockItem]] = db.run {
+    stockItemTableQuery.filter(stockItem => stockItem.shopId === shopId).to[List].result
+  }
+
+
+  /**********************************************
+    ********** Stock_Transaction table **********
+    **********************************************/
+  private class StockTransactionTable(tag: Tag) extends Table[StockTransaction](tag, "stock_transaction") {
+    def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def stockItemId: Rep[Long] = column[Long]("stock_item_id")
+    def amount: Rep[Double] = column[Double]("amount")
+    def importExport: Rep[String] = column[String]("import_export")
+    def date: Rep[Timestamp] = column[Timestamp]("date")
+    def description: Rep[String] = column[String]("description")
+
+    def stockItemIdFk = foreignKey("stock_item_id_fk", stockItemId, stockItemTableQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.NoAction)
+
+    def * = (stockItemId, amount, importExport, date, description, id.?) <> (StockTransaction.tupled, StockTransaction.unapply)
+  }
+
+  private val stockTransactionTableQuery = TableQuery[StockTransactionTable]
+
+  def insertStockTransaction(transaction: StockTransaction): Future[Long] = db.run {
+    stockTransactionTableQuery returning stockTransactionTableQuery.map(_.id) += transaction
   }
 }
