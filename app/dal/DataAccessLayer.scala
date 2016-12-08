@@ -202,6 +202,11 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     stockItemTableQuery.filter(stockItem => stockItem.shopId === shopId).to[List].result
   }
 
+  def updateStockItems(): Int = {
+    val query = sql"update stock_item set initial_amount = initial_amount + import_amount - export_amount, import_amount = 0, export_amount = 0".asUpdate
+    Await.result(db.run(query), 2 seconds)
+  }
+
 
   /**********************************************
     ********** Stock_Transaction table **********
