@@ -21,34 +21,34 @@
           <form role="form" id="newTransaction" data-ng-submit="addTransaction()" accept-charset="utf-8">
             <div class="panel-body">
 
-              <div class="form-group">
+              <div class="form-group col-lg-6">
                 <label for="headAcc">Head Account: </label>
                 <select id="headAcc" class="form-control" data-ng-model="selectedOption" data-ng-change="getAccountsByHeadId(selectedOption)" required>
                   <option data-ng-repeat="head in accountHeads" value="{{head.id}}">{{head.name}}</option>
                 </select>
               </div>
 
-              <div class="form-group">
+              <div class="form-group col-lg-6">
                 <label for="subAcc">Account: </label>
                 <select id="subAcc" class="form-control" data-ng-model="newTransaction.accountId" required>
                   <option data-ng-repeat="acc in subAccounts" value="{{acc.id}}">{{acc.name}}, {{acc.phoneNumber}}, {{acc.address}}</option>
                 </select>
               </div>
 
-              <div class="form-group">
+              <div class="form-group col-lg-6">
                 <label for="datepicker">Date: </label>
-                <input type="text" data-ng-model="newTransaction.date" id="datepicker" readonly required>
+                <input type="text" data-ng-model="newTransaction.date" id="datepicker" class="form-control" readonly required>
               </div>
 
-              <div class="form-group">
+              <div class="form-group col-lg-6">
                 <label for="type">Transaction Type: </label>
-                <select id="type" data-ng-model="newTransaction.transactionType" required>
+                <select id="type" data-ng-model="newTransaction.transactionType" class="form-control" required>
                   <option value="debit">Debit</option>
                   <option value="credit">Credit</option>
                 </select>
               </div>
 
-              <div class="panel panel-default">
+              <div class="panel panel-default col-lg-12">
 
                 <div class="table-responsive">
                   <table class="table table-striped table-bordered table-hover">
