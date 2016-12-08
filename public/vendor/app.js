@@ -172,6 +172,18 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
 
     $scope.stockTransaction = {};
     $scope.addStockTransaction = function () {
+        var selected = $("#itemList").find('option:selected');
+        var initialValue = selected.data('total');
+        console.log("Init: " + initialValue);
+        if ($scope.stockTransaction.importExport == "export" && $scope.stockTransaction.amount > initialValue) {
+            showAlertMessage("error", "Available amount is: " + initialValue);
+            return;
+        }
+        if ($scope.stockTransaction.amount < 1 ) {
+            showAlertMessage("error", "Amount should be greeter than 0");
+            return;
+        }
+
         StockService.addStockTransaction($scope.stockTransaction).then(function (res) {
             $scope.stockTransaction = {};
             showAlertMessage(res.status, res.msg)
@@ -418,9 +430,9 @@ app.service("StockService", function ($http, $q) {
         return defer.promise;
     };
 
-    task.getStockItems = function (data) {
+    task.getStockItems = function () {
         var defer = $q.defer();
-        $http.get('/api/v1/stock/item/all', data)
+        $http.get('/api/v1/stock/item/all')
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)

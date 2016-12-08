@@ -38,9 +38,22 @@
                   <tr data-ng-repeat="item in stockItems">
                     <td >{{item.itemName}}</td>
                     <td align="right">{{item.initialAmount | amountInBangla}}</td>
-                    <td align="right">{{item.importAmount | amountInBangla}}</td>
-                    <td align="right">{{(item.importAmount + item.initialAmount) | amountInBangla}}</td>
-                    <td align="right">{{item.exportAmount | amountInBangla}}</td>
+                    <td align="right">
+                      <span data-ng-if="item.importAmount == '0'">---</span>
+                      <span data-ng-if="item.importAmount != '0'">{{item.importAmount | amountInBangla}}</span>
+                    </td>
+                    <td align="right">
+                      <span data-ng-if="item.importAmount == '0'">---</span>
+                      <span data-ng-if="item.importAmount != '0'">
+                        {{(item.importAmount + item.initialAmount) | amountInBangla}}
+                      </span>
+                    </td>
+                    <td align="right">
+                      <span data-ng-if="item.exportAmount == '0'">---</span>
+                      <span data-ng-if="item.exportAmount != '0'">
+                        {{item.exportAmount | amountInBangla}}
+                      </span>
+                    </td>
                     <td align="right">{{(item.importAmount + item.initialAmount - item.exportAmount) | amountInBangla}}</td>
                   </tr>
 
@@ -89,8 +102,8 @@
                   <form role="form" id="stockTransactionForm" data-ng-submit="addStockTransaction()" class="ng-pristine ng-invalid ng-invalid-required">
                     <div class="form-group">
                       <label>Item Name: </label>
-                      <select class="form-control" data-ng-model="stockTransaction.stockItemId">
-                        <option data-ng-repeat="item in stockItems" value="{{item.id}}">{{item.itemName}}</option>
+                      <select id="itemList" class="form-control" data-ng-model="stockTransaction.stockItemId">
+                        <option data-ng-repeat="item in stockItems" data-total="{{item.initialAmount + item.importAmount - item.exportAmount}}" value="{{item.id}}">{{item.itemName}}</option>
                       </select>
                     </div>
 
