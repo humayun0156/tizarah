@@ -153,26 +153,26 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     val query = db.run {
       transactionTableQuery.filter(t => t.accountId === accountId).to[List].result
     }
-    Await.result(query, 100 milliseconds )
+    Await.result(query, 100.milliseconds )
   }
 
   implicit val transactionViewResult = GetResult(t => TransactionView(t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<<, t.<< ))
   def getTransactionById(transactionId: Long): Option[TransactionView] = {
     val query = sql"select t.transaction_id, t.description, t.date, t.transaction_type, t.amount, a.account_name, a.address, a.phone_number, h.head_name from transaction t, account a, account_head h where t.transaction_id = $transactionId and a.account_id = t.account_id and a.head_id = h.head_id".as[TransactionView]
     //transactionTableQuery.filter(t => t.id === transactionId).result.headOption
-    Await.result(db.run(query), 2 seconds).headOption
+    Await.result(db.run(query), 2.seconds).headOption
   }
 
   implicit val journalRepResult = GetResult(t => JournalRep(t.<<, t.<<, t.<<, t.<<, t.<<))
   def getTodayTranByShopId(shopId: Long, journalDate: String): List[JournalRep] = {
     val query = sql"SELECT t.transaction_id, a.account_name, t.description, t.transaction_type, t.amount  from transaction t, account a where t.shop_id=$shopId and date(t.date)=$journalDate and t.account_id=a.account_id".as[JournalRep]
-    Await.result(db.run(query), 2 seconds ).to[List]
+    Await.result(db.run(query), 2.seconds ).to[List]
   }
 
   implicit val ledgerIndexDataResult = GetResult(l => LedgerIndexData(l.<<, l.<<, l.<<, l.<<))
   def getLedgerIndexData(shopId: Long): List[LedgerIndexData] = {
     val query = sql"SELECT h.head_id, h.head_name, a.account_id, a.account_name from account a, account_head h where a.shop_id=$shopId and h.shop_id=$shopId and h.head_id=a.head_id".as[LedgerIndexData]
-    Await.result(db.run(query), 3 seconds).to[List]
+    Await.result(db.run(query), 3.seconds).to[List]
   }
 
 
@@ -198,13 +198,17 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
     stockItemTableQuery returning stockItemTableQuery.map(_.id) += stockItem
   }
 
-  def getStockItems(shopId: Long): Future[List[StockItem]] = db.run {
-    stockItemTableQuery.filter(stockItem => stockItem.shopId === shopId).to[List].result
+  def getStockItems(shopId: Option[Long]): Future[List[StockItem]] = db.run {
+    shopId match {
+      case Some(x) => stockItemTableQuery.filter(stockItem => stockItem.shopId === x).to[List].result
+      case None => stockItemTableQuery.to[List].result
+    }
+
   }
 
   def updateStockItems(): Int = {
     val query = sql"update stock_item set initial_amount = initial_amount + import_amount - export_amount, import_amount = 0, export_amount = 0".asUpdate
-    Await.result(db.run(query), 2 seconds)
+    Await.result(db.run(query), 2.seconds)
   }
 
 
@@ -229,4 +233,33 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
   def insertStockTransaction(transaction: StockTransaction): Future[Long] = db.run {
     stockTransactionTableQuery returning stockTransactionTableQuery.map(_.id) += transaction
   }
+
+
+  /**********************************************
+    ********** Stock_Transaction table **********
+    **********************************************/
+  private class StockItemHistoryTable(tag: Tag) extends Table[StockItemHistory](tag, "stock_item_history") {
+    def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def shopId: Rep[Long] = column[Long]("shop_id")
+    def date: Rep[Timestamp] = column[Timestamp]("date")
+    def history: Rep[String] = column[String]("history")
+
+    def shopIdFk = foreignKey("shop_id_Fk", shopId, shopTableQuery)(_.id, onUpdate=ForeignKeyAction.Restrict, onDelete=ForeignKeyAction.NoAction)
+
+    def * = (shopId, date, history, id.?) <> (StockItemHistory.tupled, StockItemHistory.unapply)
+  }
+
+  private val stockItemHistoryTableQuery = TableQuery[StockItemHistoryTable]
+
+  def insertStockHistory(stockHistory: StockItemHistory): Future[Long] = db.run {
+    stockItemHistoryTableQuery returning  stockItemHistoryTableQuery.map(_.id) += stockHistory
+  }
+
+  implicit val stockHistoryViewResult = GetResult(t => StockHistoryView(t.<<))
+  def getStockItemHistory(date: String, shopId: Long): Option[StockHistoryView]  = {
+    //stockItemHistoryTableQuery.filter(stockItem => stockItem.date === date).to[List].result.headOption
+    val query = sql"SELECT h.history FROM stock_item_history h WHERE date(h.date)=$date and h.shop_id=$shopId".as[StockHistoryView];
+    Await.result(db.run(query), 2.seconds).to[List].headOption
+  }
+
 }
