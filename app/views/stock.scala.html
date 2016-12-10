@@ -14,7 +14,7 @@
             </li>
             <li class=""><a href="#stockTransaction" data-toggle="tab" aria-expanded="false">Stock Transaction</a>
             </li>
-            <li ><a href="#settings" data-toggle="tab" aria-expanded="false">Settings</a>
+            <li ><a href="#stockHistory" data-toggle="tab" aria-expanded="false">Stock History</a>
             </li>
           </ul>
 
@@ -144,10 +144,75 @@
             </div>
 
 
-            <div class="tab-pane fade" id="settings">
-              <h4>Settings Tab</h4>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            </div>
+            <div class="tab-pane fade" id="stockHistory">
+              <h4>Stock History</h4>
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="form-group">
+                        @*<label for="datepicker">Date:  {{date | date:'dd-MM-yyyy'}}</label>*@
+                        <label for="datepicker_1">Date: </label>
+                        <input type="text" data-ng-model="itemHistoryDate"
+                        id="datepicker_1" readonly required data-ng-change="change(itemHistoryDate)">
+                        <input type="text" id="alternate" size="30">
+                      </div>
+                    </div>
+
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                              <tr>
+                                <th>Item name</th>
+                                <th>Incoming</th>
+                                <th>Import</th>
+                                <th>total</th>
+                                <th>Export</th>
+                                <th>In hand</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              <tr data-ng-repeat="item in historyItems">
+                                <td >{{item.itemName}}</td>
+                                <td align="right">{{item.initialAmount | amountInBangla}}</td>
+                                <td align="right">
+                                  <span data-ng-if="item.importAmount == '0'">---</span>
+                                  <span data-ng-if="item.importAmount != '0'">{{item.importAmount | amountInBangla}}</span>
+                                </td>
+                                <td align="right">
+                                  <span data-ng-if="item.importAmount == '0'">---</span>
+                                  <span data-ng-if="item.importAmount != '0'">
+                                    {{(item.importAmount + item.initialAmount) | amountInBangla}}
+                                  </span>
+                                </td>
+                                <td align="right">
+                                  <span data-ng-if="item.exportAmount == '0'">---</span>
+                                  <span data-ng-if="item.exportAmount != '0'">
+                                    {{item.exportAmount | amountInBangla}}
+                                  </span>
+                                </td>
+                                <td align="right">{{(item.importAmount + item.initialAmount - item.exportAmount) | amountInBangla}}</td>
+                              </tr>
+
+                            </tbody>
+
+                          </table>
+                        </div>
+                      </div>
+                  </div>
+
+
+                </div>
+              </div>
+
+
+
+
+                  </div>
           </div>
 
       </div>
