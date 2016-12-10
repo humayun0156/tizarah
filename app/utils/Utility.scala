@@ -27,6 +27,8 @@ object Utility {
   implicit val stockItemFormFormat = Json.format[StockItemForm]
   implicit val stockItemFormat = Json.format[StockItem]
   implicit val stockTransactionFormFormat = Json.format[StockTransactionForm]
+  implicit val stockHistoryViewFormat = Json.format[StockHistoryView]
+
 
   implicit val rds: Reads[Timestamp] = (__ \ "time").read[Long].map{ long => new Timestamp(long) }
   implicit val wrs: Writes[Timestamp] = (__ \ "time").write[Long].contramap{ (a: Timestamp) => a.getTime }
