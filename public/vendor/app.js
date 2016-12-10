@@ -190,6 +190,30 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
         })
     };
 
+    function getItemHistoryByDate(date) {
+        StockService.getItemHistory(date).then(function (res) {
+            $scope.historyItems = res.data;
+
+            console.log(res.data);
+        }, function (err) {
+            //error
+        });
+    }
+
+    $scope.change = function (dateValue) {
+        console.log("Date: " + dateValue); //    dd/MM/yyyy
+        var splitDate = dateValue.split("/");
+        console.log("Changed data: " + dateValue);
+        //var d = dateValue.replace(/\//g, '-');
+        var day = splitDate[0];
+        var month = splitDate[1];
+        var year = splitDate[2];
+        var d = new Date(year+"-"+month+"-"+day).getTime();
+        console.log("D: " + d);
+        getItemHistoryByDate(d);
+    };
+
+
     function getStockItems() {
         StockService.getStockItems().then(function (res) {
             $scope.stockItems = res.data;
@@ -433,6 +457,18 @@ app.service("StockService", function ($http, $q) {
     task.getStockItems = function () {
         var defer = $q.defer();
         $http.get('/api/v1/stock/item/all')
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
+        return defer.promise;
+    };
+
+    task.getItemHistory = function (date) {
+        var defer = $q.defer();
+        $http.get('/api/v1/stock/item/history?date=' + date)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
