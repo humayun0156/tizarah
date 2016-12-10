@@ -6,11 +6,11 @@ import java.util.Date
 import javax.inject.Inject
 
 import dal.DataAccessLayer
-import models.{StockItem, StockTransaction, Transaction}
+import models.{StockItem, StockTransaction}
 import play.api.Logger
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsError, JsResult, JsValue, Json}
 import play.api.mvc.{Action, Controller}
-import utils.{StockItemForm, StockTransactionForm, TransactionForm}
+import utils.{StockItemForm, StockTransactionForm}
 import utils.Utility._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +29,8 @@ class StockController @Inject() (accessData: DataAccessLayer)
 
   def getStockItems = Action.async { request =>
     val shopId = getShopId(request)
-    accessData.getStockItems(shopId).map { res =>
+    accessData.getStockItems(Some(shopId)).map { res =>
+      logger.info("JSON => " + Json.toJson(res).toString())
       Ok(successResponse(Json.toJson(res), ""))
     }
   }
@@ -74,5 +75,28 @@ class StockController @Inject() (accessData: DataAccessLayer)
         }
       }
     )
+  }
+
+  def getItemHistory(date: Long) = Action.async { request =>
+
+    logger.info("DateRequested for journal: " + date)
+    val dd: String = formattedDateAsString(date, "yyyy-MM-dd")
+    logger.info("FormattedDate of journal: " + dd)
+    val shopId = getShopId(request)
+    val data = accessData.getStockItemHistory(dd, shopId)
+
+    data.map(
+      value => {
+        val json: JsValue = Json.parse(value.stockHistory)
+        val res: JsResult[List[StockItem]] = json.validate[List[StockItem]]
+        Future.successful(Ok(successResponse(Json.toJson(res.get), "")))
+      }
+    ).getOrElse(
+      Future.successful(Ok(successResponse(Json.toJson(""), "")))
+    )
+    //Future.successful(Ok)
+
+
+
   }
 }
