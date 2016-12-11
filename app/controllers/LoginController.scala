@@ -2,19 +2,18 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import dal.UserRepository
-import models.User
+import dal.DataAccessLayer
+import models.{ShopUser, User}
 import play.api.Logger
-import play.api.libs.json.{JsResult, JsSuccess, Json, Reads}
+import play.api.libs.json.{JsResult, JsSuccess, Json}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Action, Controller, Cookie, DiscardingCookie}
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.concurrent.{ExecutionContext}
 
 
 @Singleton
-class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: ExecutionContext) extends Controller {
+class LoginController@Inject() (userRepo: DataAccessLayer)(implicit val ec: ExecutionContext) extends Controller {
   implicit val userFormat = Json.format[User]
 
   val logger = Logger(this.getClass())
@@ -39,12 +38,16 @@ class LoginController@Inject() (userRepo: UserRepository)(implicit val ec: Execu
 
     jsResult match {
       case s: JsSuccess[LoginRequest]  => {
-        s.get.valid.map { x =>
-
-          Ok(toJson(Map("valid" -> true)))
-            .withSession("user" -> s.get.username)
-            .withCookies(Cookie("shopId", "1", Some(3600)))
-
+        s.get.valid.map { user =>
+          logger.info("UserId: " + user.id)
+          val info: Option[ShopUser] = userRepo.getShopByUserId(user.id.get)
+          info.map { shopUser =>
+            Ok(toJson(Map("valid" -> true)))
+              .withSession("user" -> s.get.username)
+              .withCookies(Cookie("shopId", shopUser.shopId.toString, Some(3600)))
+          }.getOrElse(
+            Ok(toJson(Map("valid" -> false)))
+          )
         }.getOrElse(
           Ok(toJson(Map("valid" -> false)))
         )
