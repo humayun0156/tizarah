@@ -46,6 +46,35 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
 
 
   /**********************************************
+    *************** User table ****************
+    **********************************************/
+  private class UserTable(tag: Tag) extends Table[User](tag, "user") {
+    def id: Rep[Long] = column[Long]("user_id", O.PrimaryKey, O.AutoInc)
+    def userName: Rep[String] = column[String]("user_name")
+    def password: Rep[String] = column[String]("password")
+    def displayName: Rep[String] = column[String]("display_name")
+
+    def * = (userName, password, displayName, id.?) <> (User.tupled, User.unapply)
+  }
+
+  private val userTableQuery = TableQuery[UserTable]
+
+  def getByUserNamePassword(userName: String, password: String): Option[User] = Await.result (
+    db.run {
+      userTableQuery.filter(x => x.userName === userName && x.password === password).result.headOption
+    }, 50.milliseconds
+  ) match {
+    case Some(x) => Some(x)
+    case None => None
+  }
+
+  def getAll(): Future[List[User]] = db.run {
+    userTableQuery.to[List].result.statements foreach println
+    userTableQuery.to[List].result
+  }
+
+
+  /**********************************************
     *************** Shop table ****************
     **********************************************/
   private class ShopTable(tag: Tag) extends Table[Shop](tag, "shop") {
@@ -64,6 +93,26 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
 
   def getAllShop(): Future[List[Shop]]= db.run {
     shopTableQuery.to[List].result
+  }
+
+  /**********************************************
+    *************** working_shop table ****************
+    **********************************************/
+  private class WorkingShopTable(tag: Tag) extends Table[WorkingShop](tag, "working_shop") {
+    def shopId: Rep[Long] = column[Long]("shop_id")
+    def userId: Rep[Long] = column[Long]("user_id")
+
+    def shopIdFk = foreignKey("shop_id_fk", shopId, shopTableQuery)(_.id)
+    def userIdFk = foreignKey("user_id_fk", userId, userTableQuery)(_.id)
+
+    def * = (shopId, userId) <> (WorkingShop.tupled, WorkingShop.unapply)
+  }
+  private val workingShopTableQuery = TableQuery[WorkingShopTable]
+
+  implicit val shopUserResult = GetResult(su => ShopUser(su.<<, su.<<, su.<<, su.<<, su.<<, su.<<))
+  def getShopByUserId(userId: Long): Option[ShopUser] = {
+    val query = sql"select s.shop_name, s.address, s.shop_id, w.user_id, u.user_name, u.display_name from shop s, working_shop w, user u where w.user_id=$userId and u.user_id=$userId;".as[ShopUser]
+    Await.result(db.run(query), 2.seconds ).headOption
   }
 
 
