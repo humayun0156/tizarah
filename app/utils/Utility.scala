@@ -8,8 +8,10 @@ import models.{Business, LedgerAccount, LedgerIndexAccount, Shop}
 import play.api.libs.json.{Format, Writes, _}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Json._
-import play.api.mvc.Request
+import play.api.mvc.{Request, Results}
 import models._
+
+import scala.concurrent.Future
 /**
   * @author Humayun
   */
@@ -56,9 +58,36 @@ object Utility {
   }
 
   def getShopId[A](request: Request[A]): Long = {
-    request.cookies.get("shopId") match {
-      case Some(ck) => ck.value.toLong
+    request.cookies.get("token") match {
+      case Some(ck) => parseCookie(ck.value, "shopId").toLong
+      case None => 0L
     }
+  }
+
+  def getUserId[A](request: Request[A]): Long = {
+    request.cookies.get("token") match {
+      case Some(ck) => parseCookie(ck.value, "userId").toLong
+      case None => 0L
+    }
+  }
+
+  def parseCookie(tkValue: String, key: String): String = {
+    // shopId=23;userId=34
+    val decryptToken = EncryptUtil.decrypt(tkValue)
+
+    var x: String = ""
+    if (decryptToken.contains("shopId") && decryptToken.contains("userId")) {
+      val arr1: Array[String] = decryptToken.split(";")
+      for (suId <- arr1) {
+        if (suId.startsWith(key)) {
+          val arr2: Array[String] = suId.split("=")
+          if (arr2.length > 1) {
+            x = arr2(1)
+          }
+        }
+      }
+    }
+    x
   }
 
   def formattedDateAsString(longDate: Long, pattern: String): String = {
