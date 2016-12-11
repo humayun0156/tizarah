@@ -8,15 +8,16 @@ import play.api.Logger
 import play.api.libs.json.{JsResult, JsSuccess, Json}
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Action, Controller, Cookie, DiscardingCookie}
+import utils.EncryptUtil
 
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.ExecutionContext
 
 
 @Singleton
 class LoginController@Inject() (userRepo: DataAccessLayer)(implicit val ec: ExecutionContext) extends Controller {
   implicit val userFormat = Json.format[User]
 
-  val logger = Logger(this.getClass())
+  val logger = Logger(this.getClass)
 
   def login = Action { request =>
     request.cookies.get("shopId") match {
@@ -39,12 +40,19 @@ class LoginController@Inject() (userRepo: DataAccessLayer)(implicit val ec: Exec
     jsResult match {
       case s: JsSuccess[LoginRequest]  => {
         s.get.valid.map { user =>
-          logger.info("UserId: " + user.id)
           val info: Option[ShopUser] = userRepo.getShopByUserId(user.id.get)
+
           info.map { shopUser =>
+            logger.info("===>shopId=" + shopUser.shopId.toString + ";userId=" + shopUser.userId.toString)
+            logger.info("shopName: " + shopUser.shopName + ";displayName: " + shopUser.displayName)
+            val token = EncryptUtil.encrypt("shopId=" + shopUser.shopId.toString + ";userId=" + shopUser.userId.toString)
+            logger.info("Token: " + token)
             Ok(toJson(Map("valid" -> true)))
               .withSession("user" -> s.get.username)
-              .withCookies(Cookie("shopId", shopUser.shopId.toString, Some(3600)))
+              .withCookies(
+                Cookie("token", token, Some(3600)),
+                Cookie("shopName", shopUser.shopName, Some(3600)),
+                Cookie("userName", shopUser.displayName, Some(3600)))
           }.getOrElse(
             Ok(toJson(Map("valid" -> false)))
           )
