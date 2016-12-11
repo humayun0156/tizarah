@@ -16,7 +16,7 @@ class ExampleFilter@Inject()(implicit override val mat: Materializer,
   override def apply(f: (RequestHeader) => Future[Result])
                     (rh: RequestHeader): Future[Result] = {
 
-    Logger.info(rh.path)
+    //Logger.info(rh.path)
 
     f(rh).map(result => result.withHeaders("X-ExampleFilter" -> "foo"))
   }
