@@ -201,8 +201,8 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
         })
     };
 
-    function getItemHistoryByDate(date) {
-        StockService.getItemHistory(date).then(function (res) {
+    function getStockHistoryByDate(date) {
+        StockService.getStockHistory(date).then(function (res) {
             $scope.historyItems = res.data;
 
             console.log(res.data);
@@ -221,7 +221,7 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
         var year = splitDate[2];
         var d = new Date(year+"-"+month+"-"+day).getTime();
         console.log("D: " + d);
-        getItemHistoryByDate(d);
+        getStockHistoryByDate(d);
     };
 
 
@@ -493,9 +493,9 @@ app.service("StockService", function ($http, $q) {
         return defer.promise;
     };
 
-    task.getItemHistory = function (date) {
+    task.getStockHistory = function (date) {
         var defer = $q.defer();
-        $http.get('/api/v1/stock/item/history?date=' + date)
+        $http.get('/api/v1/stock/history?date=' + date)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)

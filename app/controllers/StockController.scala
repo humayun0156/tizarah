@@ -27,6 +27,10 @@ class StockController @Inject() (accessData: DataAccessLayer)
     Ok(views.html.stock())
   }
 
+  def itemHistory(id: Long) = Action {
+    Ok(views.html.stock_item_history(id))
+  }
+
   def getStockItems = Action.async { request =>
     val shopId = getShopId(request)
     accessData.getStockItems(Some(shopId)).map { res =>
