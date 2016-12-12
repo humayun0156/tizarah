@@ -1,7 +1,7 @@
 
 var app = angular.module('myApp', ['ui.bootstrap']);
 
-app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
+app.controller('accountHeadCtrl', function ($scope, $timeout, $filter, AccHeadService) {
     $scope.myHeader = "Hello world!";
     $timeout(function(){
         $scope.myHeader = "How are you today?"
@@ -53,6 +53,10 @@ app.controller('accountHeadCtrl', function ($scope, $timeout, AccHeadService) {
 
     $scope.newTransaction = {};
     $scope.addTransaction = function () {
+        if ($scope.newTransaction.date === undefined) {
+            $scope.newTransaction.date = $filter('todayDate')();
+        }
+
         AccHeadService.addTransaction($scope.newTransaction).then(function (res) {
             $scope.newTransaction = {};
             showAlertMessage(res.status, res.msg)
@@ -172,6 +176,13 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
 
     $scope.stockTransaction = {};
     $scope.addStockTransaction = function () {
+        if ($scope.stockTransaction.description === undefined) {
+            $scope.stockTransaction.description = "";
+        }
+        if ($scope.stockTransaction.date === undefined) {
+            $scope.stockTransaction.date = $filter('todayDate')();
+        }
+
         var selected = $("#itemList").find('option:selected');
         var initialValue = selected.data('total');
         console.log("Init: " + initialValue);
@@ -244,6 +255,22 @@ app.filter('dateFormat', function() {
         var month = date.getMonth() + 1;
         var day = date.getDay();
         return day + "/" + month + "/" + year;
+    };
+});
+
+app.filter('todayDate', function() {
+    return function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10){
+            dd='0'+dd
+        }
+        if(mm<10){
+            mm='0'+mm
+        }
+        return dd+'/'+mm+'/'+yyyy;
     };
 });
 
