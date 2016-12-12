@@ -177,7 +177,7 @@
 
                             <tbody>
                               <tr data-ng-repeat="item in historyItems">
-                                <td >{{item.itemName}}</td>
+                                <td ><a href="/app/stock/item/history/{{item.id}}">{{item.itemName}}</a></td>
                                 <td align="right">{{item.initialAmount | amountInBangla}}</td>
                                 <td align="right">
                                   <span data-ng-if="item.importAmount == '0'">---</span>
@@ -219,5 +219,6 @@
         <!-- /.col-lg-12 -->
 
     </div>
+  </div>
   </div>
 }
