@@ -1,3 +1,3 @@
-# Getting started with Play (Scala)
+# Tizarah
+An accounting application build with Playframework with Scala
 
-This project demonstrate how to create a simple CRUD application with Play.
