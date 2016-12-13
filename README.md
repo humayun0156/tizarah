@@ -1,3 +1,8 @@
 # Tizarah
-An accounting application build with Playframework with Scala
+An Open Source accounting application build with Playframework with Scala
+
+Technologies:
+- Playframework
+- Scala
+- Akka
 
