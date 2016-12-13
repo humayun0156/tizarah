@@ -27,7 +27,11 @@ class LoginController@Inject() (userRepo: DataAccessLayer)(implicit val ec: Exec
   }
 
   def logout = Action { request =>
-    Redirect(routes.LoginController.login()).discardingCookies(DiscardingCookie("shopId"))
+    Redirect(routes.LoginController.login()).discardingCookies(
+      DiscardingCookie("token"),
+      DiscardingCookie("shopName"),
+      DiscardingCookie("userName")
+    )
   }
 
   // Shows the login screen and empties the session:
