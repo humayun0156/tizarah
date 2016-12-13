@@ -81,13 +81,13 @@ class StockController @Inject() (accessData: DataAccessLayer)
     )
   }
 
-  def getItemHistory(date: Long) = Action.async { request =>
+  def getStockHistory(date: Long) = Action.async { request =>
 
     logger.info("DateRequested for journal: " + date)
     val dd: String = formattedDateAsString(date, "yyyy-MM-dd")
     logger.info("FormattedDate of journal: " + dd)
     val shopId = getShopId(request)
-    val data = accessData.getStockItemHistory(dd, shopId)
+    val data = accessData.getStockHistory(dd, shopId)
 
     data.map(
       value => {
@@ -99,8 +99,15 @@ class StockController @Inject() (accessData: DataAccessLayer)
       Future.successful(Ok(successResponse(Json.toJson(""), "")))
     )
     //Future.successful(Ok)
+  }
+
+  def getStockItemHistory(itemId: Long) = Action.async { request =>
+    val shopId = getShopId(request)
+    val data = accessData.getStockItemHistory(shopId, itemId)
+
+    Future.successful(Ok(successResponse(Json.toJson(data), "")))
 
 
-
+    //Future.successful(Ok)
   }
 }

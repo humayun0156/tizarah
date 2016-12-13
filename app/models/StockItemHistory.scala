@@ -10,3 +10,6 @@ case class StockItemHistory(shopId: Long, date: Timestamp, history: String,
 
 
 case class StockHistoryView(stockHistory: String)
+
+case class StockItemHistoryView(itemName: String, amount: Double, transactionType: String,
+                                date: Timestamp, description: String)

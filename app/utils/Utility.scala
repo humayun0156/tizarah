@@ -17,6 +17,10 @@ import scala.concurrent.Future
   */
 object Utility {
 
+  implicit val rds: Reads[Timestamp] = (__ \ "time").read[Long].map{ long => new Timestamp(long) }
+  implicit val wrs: Writes[Timestamp] = (__ \ "time").write[Long].contramap{ (a: Timestamp) => a.getTime }
+  implicit val fmt: Format[Timestamp] = Format(rds, wrs)
+
   implicit val businessFormat = Json.format[Business]
   implicit val shopFormat = Json.format[Shop]
 
@@ -30,11 +34,7 @@ object Utility {
   implicit val stockItemFormat = Json.format[StockItem]
   implicit val stockTransactionFormFormat = Json.format[StockTransactionForm]
   implicit val stockHistoryViewFormat = Json.format[StockHistoryView]
-
-
-  implicit val rds: Reads[Timestamp] = (__ \ "time").read[Long].map{ long => new Timestamp(long) }
-  implicit val wrs: Writes[Timestamp] = (__ \ "time").write[Long].contramap{ (a: Timestamp) => a.getTime }
-  implicit val fmt: Format[Timestamp] = Format(rds, wrs)
+  implicit val stockItemHistoryViewFormat = Json.format[StockItemHistoryView]
 
 
   implicit val transactionForm = Json.format[TransactionForm]
