@@ -248,6 +248,26 @@ app.controller('stockCtrl', function ($scope, $timeout, $filter, StockService) {
     }
 });
 
+
+
+app.controller('stockItemHistoryCtrl', function ($scope, $timeout, $filter, StockService) {
+    var x = window.location.pathname.split("/");
+    var itemId = x[x.length-1];
+    console.log("itemId: " + itemId);
+
+    function getStockItemHistory(itemId) {
+        StockService.getStockItemHistory(itemId).then(function (res) {
+            $scope.itemHistory = res.data;
+            console.log(res.data[0].itemName);
+            console.log(res.data);
+            $scope.itemName = res.data[0].itemName;
+        }, function (err) {
+            //error
+        });
+    }
+    getStockItemHistory(itemId)
+});
+
 app.filter('dateFormat', function() {
     return function(input) {
         var date = new Date(input);
@@ -496,6 +516,18 @@ app.service("StockService", function ($http, $q) {
     task.getStockHistory = function (date) {
         var defer = $q.defer();
         $http.get('/api/v1/stock/history?date=' + date)
+            .success(function (res) {
+                task.taskList = res;
+                defer.resolve(res)
+            }).error(function (err, status) {
+            defer.reject(err);
+        });
+        return defer.promise;
+    };
+
+    task.getStockItemHistory = function (itemId) {
+        var defer = $q.defer();
+        $http.get('/api/v1/stock/item/history/' + itemId)
             .success(function (res) {
                 task.taskList = res;
                 defer.resolve(res)
