@@ -60,6 +60,15 @@ CREATE TABLE transaction (
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
+CREATE TABLE stock_item_history(
+  shop_id INT(12) NOT NULL,
+  date TIMESTAMP NOT NULL,
+  history TEXT NOT NULL,
+  id INT(12) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY(id),
+  FOREIGN KEY (shop_id) REFERENCES shop(shop_id)
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 CREATE TABLE stock_item(
   shop_id INT(12) NOT NULL,
   item_name varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -97,6 +106,7 @@ CREATE TABLE user (
   user_id INT(12) NOT NULL AUTO_INCREMENT,
   user_name VARCHAR(256) NOT NULL,
   password VARCHAR(256) NOT NULL,
+  display_name VARCHAR(256) NOT NULL,
   PRIMARY KEY (user_id)
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 insert INTO user(user_name, password) VALUES ('tizarah', 'tizarah');
