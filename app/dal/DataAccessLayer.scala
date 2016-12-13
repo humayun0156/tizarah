@@ -305,10 +305,16 @@ class DataAccessLayer @Inject() (dbConfigProvider: DatabaseConfigProvider)
   }
 
   implicit val stockHistoryViewResult = GetResult(t => StockHistoryView(t.<<))
-  def getStockItemHistory(date: String, shopId: Long): Option[StockHistoryView]  = {
+  def getStockHistory(date: String, shopId: Long): Option[StockHistoryView]  = {
     //stockItemHistoryTableQuery.filter(stockItem => stockItem.date === date).to[List].result.headOption
-    val query = sql"SELECT h.history FROM stock_item_history h WHERE date(h.date)=$date and h.shop_id=$shopId".as[StockHistoryView];
+    val query = sql"SELECT h.history FROM stock_item_history h WHERE date(h.date)=$date and h.shop_id=$shopId".as[StockHistoryView]
     Await.result(db.run(query), 2.seconds).to[List].headOption
+  }
+
+  implicit val stockItemHistoryViewResult = GetResult(t => StockItemHistoryView(t.<<, t.<<, t.<<, t.<<, t.<<))
+  def getStockItemHistory(shopId: Long, itemId: Long): List[StockItemHistoryView] = {
+    val query = sql"select s.item_name, t.amount, t.import_export, t.date, t.description from stock_item s, stock_transaction t where s.shop_id=$shopId and s.item_id=t.stock_item_id and s.item_id=$itemId order by t.date DESC".as[StockItemHistoryView]
+    Await.result(db.run(query), 2.seconds).to[List]
   }
 
 }
