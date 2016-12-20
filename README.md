@@ -5,4 +5,6 @@ Technologies:
 - Playframework
 - Scala
 - Akka
+- Bootstrap
+- AngularJS
 
